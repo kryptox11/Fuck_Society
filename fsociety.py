@@ -83,9 +83,9 @@ def menu():
                 return None
     completer = MyCompleter([
     # Comandi - unica categoria
-    "apt", "torghost", "os", "shutdown", "reboot", "help", "info", "updatedb",
-    "ifconfig", "macchanger", "anOFF", "anON", "msfconsole", "ftp","unbug", "net_restart","mapscii",
-    "restart", "reload", "kill", "quit", "exit","ping",
+    "torghost", "os", "shutdown", "reboot", "help", "info", "updatedb",
+    "ifconfig", "macchanger","msfconsole","ftp","unbug","net_restart","mapscii",
+    "restart","reload","kill","quit","exit","ping",
     # Local Scanning
     "nmap","netdiscover","amap","ciscotorch",
     # Gathering
