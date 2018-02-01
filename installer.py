@@ -119,7 +119,7 @@ def installer():
     time.sleep(.1)
     os.system("xterm -T 'Installing Libraries...' -e 'pip install service_identity pybluez passlib flask wtforms pysocks pyopenssl netlib twisted pcapy dnspython urllib3 ipaddress pythem bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes'") ; sleep(.1)
     os.system("xterm -T 'Installing Libraries...' -e 'python3 -m pip install mitmproxy'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install nikto jsql amap siege whatweb termineter ipmitool recon-ng theharvester python-pip python3-pip dnsmasq wireshark u3-pwn osrframework jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
+    os.system("xterm -T 'Installing Packages...' -e 'apt install sqldict cewl nikto jsql amap siege whatweb termineter ipmitool recon-ng theharvester python-pip python3-pip dnsmasq wireshark u3-pwn osrframework jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install findmyhash powerfuzzer sslyze sslstrip wol-e miranda cdpsnarf automater patator tor curl libxml2-utils commix sslscan libpcap-dev hostapd mitmf zaproxy hydra t50 lynx libssl-doc libssl-dev libdata-random-perl libfile-modified-perl libgd-perl libhook-lexwrap-perl -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install parsero cisco-torch dnsenum cookie-cadger medusa joomscan libxslt1-dev screen sublist3r whois armitage zenmap libhtml-display-perl libhtml-tableextract-perl libhtml-tokeparser-simple-perl libterm-shell-perl libtext-autoformat-perl -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maven default-jdk default-jre openjdk-8-jdk openjdk-8-jre zlib1g-dev libncurses5-dev lib32z1 lib32ncurses5 libwww-mechanize-formfiller-perl php-xml php-curl maltegoce python3 figlet bettercap -y'") ; sleep(.1)
@@ -222,6 +222,7 @@ def installer():
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/codingo/NoSQLMap.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'cd Tools/ && git clone https://github.com/websploit/websploit.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/kamorin/DHCPig.git'") ; sleep(.1)
+    os.system("xterm -T 'Setup' -e 'git clone https://github.com/m4ll0k/Infoga.git'") ; sleep(.1)
     sys.stdout.write(21 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
     #
@@ -229,7 +230,7 @@ def installer():
     sys.stdout.write(" Sposto Tools".format(bright_green,end))
     sys.stdout.flush()
     os.system("xterm -T 'Setup' -e 'mv torshammer/ fbht/ Crips/ Debinject/ simple-ducky/ SSHScan/ AndroidPINCrack/ Evil-Droid/ TheFatRat/ torghost/ KatanaFramework/ routersploit/ airgeddon/ wirespy/ Tools/'") ; sleep(.1)
-    os.system("xterm -T 'Setup' -e 'mv websploit/ Breacher/ cheetah/ onioff/ URLextractor/ sb0x-project/ a2sv/ XSSTracer/ Kautilya/ 2sv/ Jaidam/ weeman/ jexboss/ D-TECT/ OverThruster/ BinGoo/ hakkuframework/ BeeLogger/ CHAOS/ EggShell/ xerxes/ Tools/'") ; sleep(.1)
+    os.system("xterm -T 'Setup' -e 'mv Infoga/ websploit/ Breacher/ cheetah/ onioff/ URLextractor/ sb0x-project/ a2sv/ XSSTracer/ Kautilya/ 2sv/ Jaidam/ weeman/ jexboss/ D-TECT/ OverThruster/ BinGoo/ hakkuframework/ BeeLogger/ CHAOS/ EggShell/ xerxes/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv DHCPig/ NoSQLMap/ angryFuzzer/ DSXS/ ATSCAN/ car-hacking-tools/ l0l/ pentestly/ koadic/ pentmenu/ PenBox/ tulpar/ secHub/ operative-framework/ HT-WPS-Breaker/ FakeAuth/ Dracnmap/ Sn1per/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv iOSRestrictionBruteForce/ instarecon/ wifijammer/ cisco-global-exploiter/ pybomber/ vbscan/ IPMIPWN/ mitmAP/ Striker/ cpscan/ zirikatu/ KnockMail/ netattack2/ zambie/ fluxion/ ufonet/ morpheus/ RED_HAWK/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv BruteSploit/ zarp/ discover/ extract-hashes/ astroid/ xsssniper/ Brutal/ Blazy/ Trity/ credmap/ XAttacker/ sAINT/  ARCANUS/ ezsploit/ sqliv/ shellsploit-framework/ Tools/'") ; sleep(.1)
@@ -301,7 +302,7 @@ def installer():
     # fase finale
     sys.stdout.write(" Installo per Utilita'".format(bright_green,end))
     sys.stdout.flush()
-    os.system("xterm -T 'Setup' -e 'apt install playonlinux ftp python3-setuptools python3-dev netdiscover dsniff yum -y && easy_install3 pip && pip install wafw00f request pythonwhois && pip3 install pyasn1 tabulate impacket six termcolor colorama'") ; sleep(.01)
+    os.system("xterm -T 'Setup' -e 'apt install wine32 playonlinux ftp python3-setuptools python3-dev netdiscover dsniff yum -y && easy_install3 pip && pip install wafw00f request pythonwhois && pip3 install pyasn1 tabulate impacket six termcolor colorama'") ; sleep(.01)
     sys.stdout.write(13 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
     #

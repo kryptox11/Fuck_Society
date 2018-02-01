@@ -29,7 +29,7 @@ bright_cyan = '\033[1;36m'
 bright_yellow = '\033[1;33m'
 #
 underline = '\033[4m'
-Tools = "171 Tools"
+Tools = "174 Tools"
 versione = "v1.1.0.2"
 
 if sys.version_info.major >= 2.7:
@@ -97,9 +97,9 @@ def menu():
     "sqlmap", "sqliv","jaidam","sshscan","pentmenu","a2sv","crips","vbscan","torshammer","siege","blindelephant",
     "brutesploit","medusa","jsql","dnsenum","dnsmap","dotdotpwn","metagoofil","sslyze","t50","burpsuite","uatester",
     "cpscan","dtect", "dracnmap", "sechub", "arachni", "wpscan", "zaproxy", "zenmap", "uniscan","cutycapt","responder",
-    "droopescan", "striker","instarecon","dsxs","automater","intrace","smtpuserenum","angryfuzzer","dirbuster",
-    "hydra","ftp", "xhydra", "tulpar", "bingoo","xattacker", "knockmail", "osrframework","bluelog","fimap",
-    "blazy", "xsssniper","sublist3r","urlextractor","breacher","ip2host","parsero","nikto","dirb","nosqlmap",
+    "droopescan", "striker","instarecon","dsxs","automater","intrace","smtpuserenum","angryfuzzer","dirbuster","sqldict",
+    "hydra","ftp", "xhydra", "tulpar", "bingoo","xattacker", "knockmail", "osrframework","bluelog","fimap","infoga",
+    "blazy", "xsssniper","sublist3r","urlextractor","breacher","ip2host","parsero","nikto","dirb","nosqlmap","cewl",
     # WiFi
     "airgeddon", "wifite", "fakeauth", "fluxion", "wifiphisher",
     "routersploit", "wirespy", "wpsbreaker", "netattack",
@@ -1085,6 +1085,16 @@ def menu():
     elif command == 'webscarab':
         os.system("gnome-terminal -- webscarab")
         return menu()
+    elif command == 'sqldict':
+        os.system("gnome-terminal -- sqldict")
+        return menu()
+    elif command == 'cewl':
+        if option:
+            os.system("cewl --email -a --no-words {}".format(option))
+            return menu()
+        else:
+            print("/ {}Errore{}: {}CeWL{} richiede un indirizzo.")
+            return menu()
 
         # Scanning
     elif command == 'cpscan':
@@ -1349,6 +1359,13 @@ def menu():
     elif command == 'vega':
         os.system("gnome-terminal -- vega")
         return menu()
+    elif command == 'infoga':
+        if option:
+            os.system("cd Tools/Infoga/ && python infoga.py -d {} -s all -v 3".format(option))
+            return menu()
+        else:
+            print("/ {}Errore{}: {}Infoga{} richiede un indirizzo.".format(red,end, blue,end))
+            return menu()
 
     # enum
     elif command == 'sublist3r':
@@ -2170,7 +2187,7 @@ def help():
     print("$ osrframework - bingoo - recon-ng - automater * - sn1per * - red_hawk - maltego - inspy * ") ; sleep(.01)
     print("$ dmitry * - amap * - ktfconsole - operativef - theharvester * - jaidam - ip2host * - vega ") ; sleep(.01)
     print("$ hping3 - sslyze * - nikto * - blindelephant * - cutycapt * - fimap * - uatester *        ") ; sleep(.01)
-    print("$ webscarab                                                                                ") ; sleep(.01)
+    print("$ webscarab - cewl *                                                                       ") ; sleep(.01)
     print("--{}Enumerators{}:                                                                         ".format(bright_green, end)) ; sleep(.01)
     print("$ sublist3r * - dnsenum * - dnsmap * - smtpuserenum *                                      ") ; sleep(.01)
     print("--{}All-in-one{}:                                                                          ".format(bright_green, end)) ; sleep(.01)
@@ -2181,6 +2198,8 @@ def help():
     print("$ geoip * - whois *                                                                        ") ; sleep(.01)
     print("-{}Credentials Verification{}:                                                             ".format(bright_green, end)) ; sleep(.01)
     print("$ credmap * - knockmail                                                                    ") ; sleep(.01)
+    print("-{}Others{}:                                                                               ") ; sleep(.01)
+    print("$ infoga *                                                                                 ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
     print("{}Networking{}:                                                                            ".format(bright_green + underline, end)) ; sleep(.01)
     print("-{}WiFi Attacks{}:                                                                         ".format(bright_green, end)) ; sleep(.01)
@@ -2196,7 +2215,7 @@ def help():
     print("--{}BruteForce{}:                                                                          ".format(bright_green, end)) ; sleep(.01)
     print("$ blazy - hydra ftp * - xhydra - fbht - brutesploit - patator * - cheetah * - medusa *     ") ; sleep(.01)
     print("--{}SQLi{}:                                                                                ".format(bright_green, end)) ; sleep(.01)
-    print("$ sqlmap * - sqliv [web/dork] * - commix * - jsql - nosqlmap                               ") ; sleep(.01)
+    print("$ sqlmap * - sqliv [web/dork] * - commix * - jsql - nosqlmap - sqldict                     ") ; sleep(.01)
     print("--{}Site Cloner + File Donwloader{}:                                                       ".format(bright_green, end)) ; sleep(.01)
     print("$ httrack * - metagoofil *                                                                 ") ; sleep(.01)
     print("--{}Exploitation{}:                                                                        ".format(bright_green, end)) ; sleep(.01)
