@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Author: Not_Found_Error
 # Non dovresti essere qui :O
 
@@ -47,7 +48,7 @@ if euid != 0:
 
 # Verifica se eseguito installer.py
 try:
-    import netifaces,paramiko
+    import netifaces
 except ImportError:
     print("")
     print("/ {}Attenzione{}: Esegui {}installer.py{} per avviare il programma.".format(bright_yellow,end,red, end))
@@ -937,10 +938,10 @@ def menu():
         logo_menu()
     elif command == 'goldeneye':
         if option:
-            if 'http' not in option:
+            if 'http://' not in option:
                 os.system("gnome-terminal -- goldeneye http://{} -m random".format(option))
                 return menu()
-            if 'http' or 'https' in option:
+            if 'http://' or 'https://' in option:
                 os.system("gnome-terminal -- goldeneye {} -m random".format(option))
                 return menu()
         else:
@@ -1093,7 +1094,7 @@ def menu():
             os.system("cewl --email -a --no-words {}".format(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}CeWL{} richiede un indirizzo.")
+            print("/ {}Errore{}: {}CeWL{} richiede un indirizzo.".format(red,end, blue,end))
             return menu()
 
         # Scanning
@@ -1706,10 +1707,9 @@ def menu():
         return menu()
         # Exploiting
     elif command == 'routersploit':
-        os.system("reset")
-        os.system("cd Tools/routersploit/ && python rsf.py")
+        os.system("gnome-terminal -- routersploit")
         os.system("xterm -T 'Logs' -e 'rm routersploit.log'")
-        logo_menu()
+        return menu()
     elif command == 'wirespy':
         os.system("reset")
         os.system("cd Tools/wirespy/ && ./wirespy.sh")
@@ -2186,7 +2186,7 @@ def help():
     print("$ zenmap - crips - siege * - whatweb * - urlextractor * - dtect - xattacker - instarecon * ") ; sleep(.01)
     print("$ osrframework - bingoo - recon-ng - automater * - sn1per * - red_hawk - maltego - inspy * ") ; sleep(.01)
     print("$ dmitry * - amap * - ktfconsole - operativef - theharvester * - jaidam - ip2host * - vega ") ; sleep(.01)
-    print("$ hping3 - sslyze * - nikto * - blindelephant * - cutycapt * - fimap * - uatester *        ") ; sleep(.01)
+    print("$ hping3 * - sslyze * - nikto * - blindelephant * - cutycapt * - fimap * - uatester *      ") ; sleep(.01)
     print("$ webscarab - cewl *                                                                       ") ; sleep(.01)
     print("--{}Enumerators{}:                                                                         ".format(bright_green, end)) ; sleep(.01)
     print("$ sublist3r * - dnsenum * - dnsmap * - smtpuserenum *                                      ") ; sleep(.01)
@@ -2198,7 +2198,7 @@ def help():
     print("$ geoip * - whois *                                                                        ") ; sleep(.01)
     print("-{}Credentials Verification{}:                                                             ".format(bright_green, end)) ; sleep(.01)
     print("$ credmap * - knockmail                                                                    ") ; sleep(.01)
-    print("-{}Others{}:                                                                               ") ; sleep(.01)
+    print("-{}Others{}:                                                                               ".format(bright_green, end)) ; sleep(.01)
     print("$ infoga *                                                                                 ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
     print("{}Networking{}:                                                                            ".format(bright_green + underline, end)) ; sleep(.01)

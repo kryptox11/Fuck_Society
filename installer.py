@@ -98,7 +98,7 @@ def installer():
     sys.stdout.write(" Preliminari".format(bright_green,end))
     sys.stdout.flush()
     os.system("xterm -T 'Updating' -e 'dpkg --add-architecture i386 && apt update && apt upgrade -y && apt dist-upgrade -y && apt autoremove -y'") ; sleep(.1)
-    os.system("xterm -T 'Updating' -e 'dpkg --configure -a && pip install --upgrade pip lxml && searchsploit -u'") ; sleep(.1)
+    os.system("xterm -T 'Updating' -e 'dpkg --configure -a && pip install --upgrade pip lxml'") ; sleep(.1)
     sys.stdout.write(23 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
     #
@@ -119,7 +119,7 @@ def installer():
     time.sleep(.1)
     os.system("xterm -T 'Installing Libraries...' -e 'pip install service_identity pybluez passlib flask wtforms pysocks pyopenssl netlib twisted pcapy dnspython urllib3 ipaddress pythem bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes'") ; sleep(.1)
     os.system("xterm -T 'Installing Libraries...' -e 'python3 -m pip install mitmproxy'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install sqldict cewl nikto jsql amap siege whatweb termineter ipmitool recon-ng theharvester python-pip python3-pip dnsmasq wireshark u3-pwn osrframework jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
+    os.system("xterm -T 'Installing Packages...' -e 'apt install routersploit sqldict cewl nikto jsql amap siege whatweb termineter ipmitool recon-ng theharvester python-pip python3-pip dnsmasq wireshark u3-pwn osrframework jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install findmyhash powerfuzzer sslyze sslstrip wol-e miranda cdpsnarf automater patator tor curl libxml2-utils commix sslscan libpcap-dev hostapd mitmf zaproxy hydra t50 lynx libssl-doc libssl-dev libdata-random-perl libfile-modified-perl libgd-perl libhook-lexwrap-perl -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install parsero cisco-torch dnsenum cookie-cadger medusa joomscan libxslt1-dev screen sublist3r whois armitage zenmap libhtml-display-perl libhtml-tableextract-perl libhtml-tokeparser-simple-perl libterm-shell-perl libtext-autoformat-perl -y'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'apt install cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maven default-jdk default-jre openjdk-8-jdk openjdk-8-jre zlib1g-dev libncurses5-dev lib32z1 lib32ncurses5 libwww-mechanize-formfiller-perl php-xml php-curl maltegoce python3 figlet bettercap -y'") ; sleep(.1)
@@ -136,7 +136,6 @@ def installer():
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/Screetsec/TheFatRat.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/susmithHCK/torghost.git'")  ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/PowerScript/KatanaFramework.git'")  ; sleep(.1)
-    os.system("xterm -T 'Setup' -e 'git clone https://github.com/reverse-shell/routersploit.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://www.github.com/v1s1t0r1sh3r3/airgeddon'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://www.github.com/AresS31/wirespy.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/shawarkhanethicalhacker/D-TECT.git'") ; sleep(.1)
@@ -229,7 +228,7 @@ def installer():
     # move
     sys.stdout.write(" Sposto Tools".format(bright_green,end))
     sys.stdout.flush()
-    os.system("xterm -T 'Setup' -e 'mv torshammer/ fbht/ Crips/ Debinject/ simple-ducky/ SSHScan/ AndroidPINCrack/ Evil-Droid/ TheFatRat/ torghost/ KatanaFramework/ routersploit/ airgeddon/ wirespy/ Tools/'") ; sleep(.1)
+    os.system("xterm -T 'Setup' -e 'mv torshammer/ fbht/ Crips/ Debinject/ simple-ducky/ SSHScan/ AndroidPINCrack/ Evil-Droid/ TheFatRat/ torghost/ KatanaFramework/ airgeddon/ wirespy/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv Infoga/ websploit/ Breacher/ cheetah/ onioff/ URLextractor/ sb0x-project/ a2sv/ XSSTracer/ Kautilya/ 2sv/ Jaidam/ weeman/ jexboss/ D-TECT/ OverThruster/ BinGoo/ hakkuframework/ BeeLogger/ CHAOS/ EggShell/ xerxes/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv DHCPig/ NoSQLMap/ angryFuzzer/ DSXS/ ATSCAN/ car-hacking-tools/ l0l/ pentestly/ koadic/ pentmenu/ PenBox/ tulpar/ secHub/ operative-framework/ HT-WPS-Breaker/ FakeAuth/ Dracnmap/ Sn1per/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv iOSRestrictionBruteForce/ instarecon/ wifijammer/ cisco-global-exploiter/ pybomber/ vbscan/ IPMIPWN/ mitmAP/ Striker/ cpscan/ zirikatu/ KnockMail/ netattack2/ zambie/ fluxion/ ufonet/ morpheus/ RED_HAWK/ Tools/'") ; sleep(.1)
@@ -252,7 +251,6 @@ def installer():
     os.system("xterm -T 'Setup' -e 'unzip ngrok-*.zip && rm ngrok-*.zip && mv ngrok Tools/ && cp Tools/ngrok /usr/local/sbin/'")  ; sleep(.1) # ngrok
     os.system("xterm -T 'Setup' -e 'cd Tools/Trity && python install.py'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'chmod +x Tools/sAINT/configure.sh && cd Tools/sAINT/ && ./configure.sh'") ; sleep(.1)
-    os.system("xterm -T 'Setup' -e 'cd Tools/routersploit/ && pip install -r requirements.txt'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e './Tools/hakkuframework/install'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'cd Tools/EggShell && easy_install pycrypto'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'gcc Tools/xerxes/xerxes.c -o Tools/xerxes/xerxes'") ; sleep(.3)
