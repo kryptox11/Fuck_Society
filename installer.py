@@ -20,7 +20,7 @@ sys.stdout.write("\x1b]2;Fuck Society Installer\x07")
 
 euid = os.geteuid()
 if euid != 0:
-    print("/ {}Attenzione{}: Per proseguire sono necessari i permessi di root.".format(bright_yellow,end))
+    print("/ {}Attenzione{}: Permessi di root richiesti.".format(bright_yellow,end))
     time.sleep(.5)
     args = ['sudo', sys.executable] + sys.argv + [os.environ]
     # the next line replaces the currently-running process with the sudo
@@ -38,8 +38,7 @@ def main():
         try:
             command_input = raw_input("[si/no]:")
         except (KeyboardInterrupt, EOFError):
-            print("")
-            sys.exit()
+            sys.exit("")
         tokens = command_input.split()
         try:
             command = tokens[0]
@@ -56,10 +55,10 @@ def main():
     print("")
     print("/ {}Attenzione{}:".format(bright_yellow,end))
     print("  Una volta eseguita l'installazione ti sconsiglio altamente di rinominare o ")
-    print("  spostare la cartella di {}fsociety.py{}.".format(blue,end))
+    print("  spostare la cartella di {}fsociety{}.".format(blue,end))
     print("  Se proprio devi, fallo prima.")
-    print("  Non sono responsabile per l'uso che ne farai, sei dotato di un cervello")
-    print("  dunque usalo!")
+    print("  {}Non sono responsabile per l'uso che ne farai, sei dotato di un cervello".format(red))
+    print("  dunque usalo!{}".format(end))
     print("")
     print("/ Verranno installati tutti i Pacchetti e Tools. Continuare?".format(bright_yellow,end))
     main2()
@@ -72,19 +71,18 @@ def main2():
         command = None
     except EOFError:
         print("\n")
-        print("/ {}Attenzione{}: Non potrai avviare {}fsociety.py{} senza l'installazione!\n".format(bright_yellow,end, blue,end))
+        print("/ {}Attenzione{}: Non potrai avviare {}fsociety{} senza l'installazione!\n".format(bright_yellow,end, blue,end))
         sys.exit()
     if command == 'si' or command == 's' or command == None:
         installer()
     elif command == 'no' or command == 'n':
-        print("")
-        sys.exit()
+        sys.exit("")
     else:
         print("/ {}Errore{}: Scelta non valida.".format(red,end))
         return main2()
 def signal_handler(signal, frame):
     print("\n")
-    print("/ {}Attenzione{}: Non potrai avviare {}fsociety.py{} senza l'installazione!\n".format(bright_yellow,end, blue,end))
+    print("/ {}Attenzione{}: Non potrai avviare {}fsociety{} senza l'installazione!\n".format(bright_yellow,end, blue,end))
     sys.exit()
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -117,13 +115,12 @@ def installer():
     sys.stdout.write(" Installo Librerie e Pacchetti".format(bright_green,end))
     sys.stdout.flush()
     time.sleep(.1)
-    os.system("xterm -T 'Installing Libraries...' -e 'pip install service_identity pybluez passlib flask wtforms pysocks pyopenssl netlib twisted pcapy dnspython urllib3 ipaddress pythem bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes'") ; sleep(.1)
-    os.system("xterm -T 'Installing Libraries...' -e 'python3 -m pip install mitmproxy'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install routersploit sqldict cewl nikto jsql amap siege whatweb termineter ipmitool recon-ng theharvester python-pip python3-pip dnsmasq wireshark u3-pwn osrframework jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install findmyhash powerfuzzer sslyze sslstrip wol-e miranda cdpsnarf automater patator tor curl libxml2-utils commix sslscan libpcap-dev hostapd mitmf zaproxy hydra t50 lynx libssl-doc libssl-dev libdata-random-perl libfile-modified-perl libgd-perl libhook-lexwrap-perl -y'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install parsero cisco-torch dnsenum cookie-cadger medusa joomscan libxslt1-dev screen sublist3r whois armitage zenmap libhtml-display-perl libhtml-tableextract-perl libhtml-tokeparser-simple-perl libterm-shell-perl libtext-autoformat-perl -y'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maven default-jdk default-jre openjdk-8-jdk openjdk-8-jre zlib1g-dev libncurses5-dev lib32z1 lib32ncurses5 libwww-mechanize-formfiller-perl php-xml php-curl maltegoce python3 figlet bettercap -y'") ; sleep(.1)
-    os.system("xterm -T 'Installing Packages...' -e 'apt install responder xspy gnome-terminal thc-ssl-dos ua-tester vega dirb dirbuster fimap blindelephant bluelog libxml2-dev libffi-dev driftnet inspy goldeneye python-netifaces php-cgi lighttpd python-pycurl python-geoip python-whois python-crypto python-requests -y'") ; sleep(.1)
+    os.system("xterm -T 'Installing...' -e 'pip install service_identity pybluez passlib flask wtforms pysocks pyopenssl netlib twisted pcapy dnspython urllib3 ipaddress bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes'") ; sleep(.1)
+    os.system("xterm -T 'Installing...' -e 'python3 -m pip install mitmproxy'") ; sleep(.1)
+    os.system("xterm -T 'Installing...' -e 'apt install gnome-terminal libgd-perl findmyhash powerfuzzer sslstrip wol-e miranda cdpsnarf automater patator sqldict cewl nikto jsql blindelephant bluelog libxml2-dev amap siege whatweb termineter ipmitool recon-ng libffi-dev driftnet inspy goldeneye python-netifaces php-cgi theharvester python-pip python3-pip dnsmasq wireshark u3-pwn jsql uniscan httrack arachni nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite -y'") ; sleep(.1)
+    os.system("xterm -T 'Installing...' -e 'apt install routersploit ua-tester vega responder tor curl libxml2-utils sslyze commix sslscan libpcap-dev hostapd mitmf zaproxy hydra parsero cisco-torch dnsenum cookie-cadger medusa joomscan libxslt1-dev screen sublist3r whois armitage zenmap lighttpd libhtml-display-perl python-pycurl python-geoip python-whois python-crypto python-requests libhtml-tableextract-perl libhtml-tokeparser-simple-perl libterm-shell-perl libtext-autoformat-perl bettercap -y'") ; sleep(.1)
+    os.system("xterm -T 'Installing...' -e 'apt install thc-ssl-dos libhook-lexwrap-perl dirb dirbuster fimap t50 lynx xspy libssl-doc libssl-dev libdata-random-perl libfile-modified-perl cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maven default-jdk default-jre openjdk-8-jdk openjdk-8-jre zlib1g-dev libncurses5-dev lib32z1 lib32ncurses5 libwww-mechanize-formfiller-perl php-xml php-curl maltegoce python3 figlet -y'") ; sleep(.1)
+
     os.system("xterm -T 'Installing Packages...' -e 'easy_install wtforms scapy mechanize lxml html5lib validate_email pyDNS stem netifaces && sudo cpan JSON'") ; sleep(.1)
     os.system("xterm -T 'Installing Packages...' -e 'easy_install3 lxml'") ; sleep(.2)
     sys.stdout.write(5 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
@@ -171,7 +168,6 @@ def installer():
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/Moham3dRiahi/XAttacker.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/4w4k3/KnockMail.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/lightos/credmap.git'") ; sleep(.1)
-    os.system("xterm -T 'Setup' -e 'git clone https://github.com/toxic-ig/Trity.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/UltimateHackers/Blazy.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/Screetsec/Brutal.git'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'git clone https://github.com/gbrindisi/xsssniper.git'") ; sleep(.1)
@@ -232,7 +228,7 @@ def installer():
     os.system("xterm -T 'Setup' -e 'mv Infoga/ websploit/ Breacher/ cheetah/ onioff/ URLextractor/ sb0x-project/ a2sv/ XSSTracer/ Kautilya/ 2sv/ Jaidam/ weeman/ jexboss/ D-TECT/ OverThruster/ BinGoo/ hakkuframework/ BeeLogger/ CHAOS/ EggShell/ xerxes/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv DHCPig/ NoSQLMap/ angryFuzzer/ DSXS/ ATSCAN/ car-hacking-tools/ l0l/ pentestly/ koadic/ pentmenu/ PenBox/ tulpar/ secHub/ operative-framework/ HT-WPS-Breaker/ FakeAuth/ Dracnmap/ Sn1per/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv iOSRestrictionBruteForce/ instarecon/ wifijammer/ cisco-global-exploiter/ pybomber/ vbscan/ IPMIPWN/ mitmAP/ Striker/ cpscan/ zirikatu/ KnockMail/ netattack2/ zambie/ fluxion/ ufonet/ morpheus/ RED_HAWK/ Tools/'") ; sleep(.1)
-    os.system("xterm -T 'Setup' -e 'mv BruteSploit/ zarp/ discover/ extract-hashes/ astroid/ xsssniper/ Brutal/ Blazy/ Trity/ credmap/ XAttacker/ sAINT/  ARCANUS/ ezsploit/ sqliv/ shellsploit-framework/ Tools/'") ; sleep(.1)
+    os.system("xterm -T 'Setup' -e 'mv BruteSploit/ zarp/ discover/ extract-hashes/ astroid/ xsssniper/ Brutal/ Blazy/ credmap/ XAttacker/ sAINT/  ARCANUS/ ezsploit/ sqliv/ shellsploit-framework/ Tools/'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'mv printerspam.sh Tools/'") ; sleep(.1)
     sys.stdout.write(22 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
@@ -249,7 +245,6 @@ def installer():
     os.system("xterm -T 'Setup' -e 'cd Tools/KatanaFramework/ && sh dependencies && python install'") ; sleep(.1)
         #automatici
     os.system("xterm -T 'Setup' -e 'unzip ngrok-*.zip && rm ngrok-*.zip && mv ngrok Tools/ && cp Tools/ngrok /usr/local/sbin/'")  ; sleep(.1) # ngrok
-    os.system("xterm -T 'Setup' -e 'cd Tools/Trity && python install.py'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'chmod +x Tools/sAINT/configure.sh && cd Tools/sAINT/ && ./configure.sh'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e './Tools/hakkuframework/install'") ; sleep(.1)
     os.system("xterm -T 'Setup' -e 'cd Tools/EggShell && easy_install pycrypto'") ; sleep(.1)
@@ -277,8 +272,6 @@ def installer():
     # inguma
     os.system("xterm -T 'Setup' -e 'tar -xf inguma-*.tar.gz && mv inguma/ Tools/'")
     os.system("xterm -T 'Setup' -e 'rm inguma-*.tar.gz 'inguma-0.1.1.tar.gz?r=' wget-log'")
-    # bluebox-ng
-    os.system("xterm -T 'Setup' -e 'curl -sL https://raw.githubusercontent.com/jesusprubio/bluebox-ng/master/artifacts/installScripts/kali2.sh | sudo bash -'") ; sleep(.1)
     # only chmod
     os.system("chmod +x Tools/ezsploit/ezsploit.sh") ; sleep(.1)
     os.system("chmod +x Tools/airgeddon/airgeddon.sh") ; sleep(.1)
@@ -308,7 +301,7 @@ def installer():
     sys.stdout.flush()
     os.system("xterm -T 'Wiping...' -e 'dpkg --configure -a'") ; sleep(.1)
     os.system("xterm -T 'Wiping...' -e 'mv psexecspray.py pycrypto-2.6.win32-py2.7.exe python-2.7.10.msi pywin32.exe vcredist_x86.exe Oth/'") ; sleep(.1)
-    os.system("xterm -T 'Wiping...' -e 'mv impacket/ PLATLIB/ SCRIPTS/ ../server.crt ../server.key PyInstaller*.zip Oth/'") ; sleep(.1)
+    os.system("xterm -T 'Wiping...' -e 'mv installer.py impacket/ PLATLIB/ SCRIPTS/ ../server.crt ../server.key PyInstaller*.zip Oth/'") ; sleep(.1)
     sys.stdout.write(27 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
     #
@@ -318,21 +311,20 @@ def installer():
     # Verifica installazione fsociety
     os.system("echo 'NON CANCELLARE QUESTO FILE' > Tools/Complete.txt")
     #
-    os.system("touch /usr/local/sbin/fsociety && chmod +x /usr/local/sbin/fsociety && echo '#!/bin/bash' > /usr/local/sbin/fsociety && echo 'cd {}/ && python fsociety.py' >> /usr/local/sbin/fsociety".format(os.getcwd()))
+    os.system("touch /usr/local/sbin/fsociety && chmod +x /usr/local/sbin/fsociety && echo '#!/bin/bash' > /usr/local/sbin/fsociety && echo 'cd {}/ && python fsociety' >> /usr/local/sbin/fsociety && chmod +x fsociety".format(os.getcwd()))
     #
     sys.stdout.write(8 * " " + "[ {}DONE{} ]\n".format(bright_green,end))
     sys.stdout.flush()
-    #os.system("rm installer.py")
     print("")
     print("[ {}DONE{} ]: Installazione Completata.".format(bright_green,end))
-    print("          Avvia fsociety con {}fsociety{} ovunque nella shell oppure dalla sua".format(blue,end))
-    print("          cartella con {}python fsociety.py{}.".format(blue,end))
+    print("          Avvia fsociety con {}fsociety{} ovunque nella shell oppure dalla sua".format(bright_green,end))
+    print("          cartella con {}./fsociety{}.".format(bright_green,end))
     print("")
     sys.exit()
 
 #
 def connection_detector():
-    print("/ {}Fuck Society Installer{}".format(bright_green, end)) ; sleep(.2)
+    print("/ {}Fsociety Installer{}".format(bright_green, end)) ; sleep(.2)
     sys.stdout.write("/ Verifico Connessione Internet ")
     sys.stdout.flush()
     try:
@@ -344,7 +336,7 @@ def connection_detector():
     except requests.exceptions.ConnectionError:
         sys.stdout.write(" [{} Fail {}]\n".format(red, end))
         sys.stdout.flush()
-        print("/ {}Attenzione{}: Disattiva {}TorGhost{} o verifica la tua connessione.".format(bright_yellow,end, blue,end))
+        print("/ {}Errore{}: Verifica la tua connessione e riprova.".format(red,end))
         sys.exit()
 connection_detector()
 #
