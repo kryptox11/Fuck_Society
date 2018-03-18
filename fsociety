@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Autore: Not_Found_Error
+# Autore: Skull00
 import os, sys, time, readline, signal, socket, requests, datetime, random
 from time import sleep
 import platform # cat os
