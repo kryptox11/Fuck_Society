@@ -2106,48 +2106,6 @@ def menu():
             print("/ {}Errore{}: {}Ngrok{} richiede un servizio valido e una porta da avviare come tunnel.".format(red,end, blue,end))
         return menu()
 
-    # easter-eggs :D
-    elif command == 'fsociety':
-        print("") ; sleep(1)
-        print(" / 'Do you believe in your privacy?'") ; sleep(2)
-        print(" / ~ 'Sure, why not?''") ; sleep(2)
-        print(" / 'Why not? Because you are stupid.'") ; sleep(3)
-        print("") ; sleep(1)
-        return menu()
-    elif command == 'fuck' or command == 'Fuck':
-        if option == 'society' or option == 'Society':
-            print("") ; sleep(1)
-            print(" / 'Oh Elliot, it's Tyrell'") ; sleep(2)
-            print(" / 'Tyrell it's Elliot'") ; sleep(2)
-            print(" / 'This place is getting too small for all of us...'") ; sleep(3)
-            print(" / ~ Mr.Robot") ; sleep(3)
-            print("") ; sleep(.5)
-            return menu()
-        else:
-            print("/ {}Manca un argomento...{}".format(bright_green,end))
-            return menu()
-    elif command == 'Not_Found_Error':
-        print("")
-        print("[   0.553991] Kernel panic - Unable to mount /root: Fatal exception") ; sleep(2)
-        print("[   0.553060] 01000110 01110101 01100011 01101011 00100000 01010011 01101111")
-        print("[   0.553060] 01100011 01101001 01100101 01110100 01111001") ; sleep(3)
-        print("[   0.553012] Vs3r: N/t_Fo.-nd_Error ---[$ was-,here ~ ]---") ; sleep(4)
-        print("")
-        toolbar_width = 2000
-        # setup toolbar
-        sys.stdout.write("%s" % (" " * toolbar_width))
-        sys.stdout.flush()
-        sys.stdout.write("\b" * (toolbar_width+1)) # return to start of line, after '['
-        # meccanismo
-        for i in xrange(toolbar_width):
-            time.sleep(0.003) # do real work here
-            # update the bar
-            sys.stdout.write("FatalError: Kernel Panic | ")
-            sys.stdout.flush()
-        # altro che non capisco
-        sys.stdout.write("\n\n")
-        time.sleep(1)
-        return menu()
     #
     else:
         print("/ {}Errore{}: Comando non valido. Digita {}help{} in caso di panico.".format(red,end, blue,end))
@@ -2257,7 +2215,7 @@ def logo_menu():
     print('  88__   88   88 dP   `" 88odP      `Ybo." dP   Yb dP   `" 88 88__     88    YbdP         ') ; sleep(.02)
     print('  88""   Y8   8P Yb      88"Yb      o.`Y8b Yb   dP Yb      88 88""     88     8P          ') ; sleep(.02)
     print('  88     `YbudP   YboodP 88  Yb     8bodP   YbodP   YboodP 88 888888   88    dP  {}'.format(red+versione+end)) ; sleep(.02)
-    print(" [ {}Not_Found_Error{} / {}{}{} ]                                                         ".format(bright_green,end, bright_green,Tools,end)) ; sleep(.02)
+    print(" [ {}Skull00{} / {}{}{} ]                                                         ".format(bright_green,end, bright_green,Tools,end)) ; sleep(.02)
     print("") ; sleep(.1)
     try:
         o = open("Logs/verify_first_boot.txt")
@@ -2298,8 +2256,7 @@ def exit():
 def info():
     print("") ; sleep(.02)
     print("/ Versione       : {}".format(red + versione + end)) ; sleep(.02)
-    print("/ Autore         : {}Not_Found_Error{}".format(bright_green, end)) ; sleep(.02)
-    print("/ Email          : {}notfounderror00@gmail.com{}".format(blue,end))
+    print("/ Autore         : {}Skull00{}".format(bright_green, end)) ; sleep(.02)
     print("/ Compatibilita' : {}Kali Linux (32/64 bit){}".format(blue,end)) ; sleep(.02)
     print("") ; sleep(.02)
     return menu()
