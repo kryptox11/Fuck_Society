@@ -28,16 +28,16 @@ bright_yellow = '\033[1;33m'
 #
 underline = '\033[4m'
 Tools = "171 Tools"
-versione = "v1.1.2"
+versione = "v1.1.3"
 
 if sys.version_info.major >= 2.7:
-    print("\n/ {}Attenzione{}: Questa versione non e' supportata dal tuo sistema.".format(bright_yellow, end))
-    print("/ Esegui {}installer.py{} per installare tutto il necessario.\n".format(bright_green, end))
+    print("\n// %sAttenzione%s: Questa versione non e' supportata dal tuo sistema."%(bright_yellow, end))
+    print("// Esegui %sinstaller.py%s per installare tutto il necessario.\n"%(bright_green, end))
     sys.exit()
 
 euid = os.geteuid()
 if euid != 0:
-    print("/ {}Attenzione{}: Per proseguire sono necessari i permessi di root.".format(bright_yellow,end))
+    print("// %sAttenzione%s: Permessi di root richiesti."%(bright_yellow,end))
     time.sleep(.5)
     args = ['sudo', sys.executable] + sys.argv + [os.environ]
     # the next line replaces the currently-running process with the sudo
@@ -48,8 +48,7 @@ try:
     import netifaces,paramiko
 except ImportError:
     print("")
-    print("/ {}Attenzione{}: Esegui {}installer.py{} per avviare il programma.".format(bright_yellow,end,red, end))
-    print("/ Libreria {}netifaces{} mancante.".format(blue,end))
+    print("// %sAttenzione%s: Esegui %sinstaller.py%s per avviare il programma."%(bright_yellow,end, red,end))
     print("")
     sys.exit()
 
@@ -81,8 +80,8 @@ def menu():
                 return None
     completer = MyCompleter([
     # Comandi - unica categoria
-    "torghost", "os", "shutdown", "reboot", "help", "info", "updatedb",
-    "ifconfig", "macchanger","msfconsole","ftp","net_restart","mapscii",
+    "torghost","os","help","info","updatedb","banner",
+    "ifconfig","macchanger","msfconsole","ftp","net_restart","mapscii",
     "restart","reload","kill","quit","exit","ping",
     # Local Scanning
     "nmap","netdiscover","amap","ciscotorch",
@@ -125,12 +124,12 @@ def menu():
     except KeyboardInterrupt:
         try:
             print("\n// Premi nuovamente Ctrl+C per uscire")
-            time.sleep(1.5)
+            time.sleep(1)
             return menu()
         except KeyboardInterrupt:
             exit()
     except EOFError:
-        print("\n/ {}Attenzione{}: Usa {}exit{} o {}quit{} per uscire.".format(bright_yellow,end, blue,end, blue,end))
+        print("\n// %sAttenzione%s: Usa %sexit%s o %squit%s per uscire."%(bright_yellow,end, blue,end, blue,end))
         return menu()
     tokens = command_input.split()
     try:
@@ -189,26 +188,26 @@ def menu():
         return menu()
     # comandi di sistema
     elif command == 'restart':
-        sys.stdout.write("/ Fermo i servizi ")
+        sys.stdout.write("// Fermo i servizi ")
         sys.stdout.flush()
         os.system("service postgresql stop && echo 0 > /proc/sys/net/ipv4/ip_forward")
-        sys.stdout.write("[ {}DONE{} ]\n".format(bright_green,end))
+        sys.stdout.write("[ %sDONE%s ]\n"%(bright_green,end))
         sys.stdout.flush()
         time.sleep(1)
         os.system("echo 'file destinato al macello' > Logs/verify_first_boot.txt") # verifica primo avvio
         logo_menu()
     elif command == 'reload':
-        sys.stdout.write("/ Ricarico i servizi ")
+        sys.stdout.write("// Ricarico i servizi ")
         sys.stdout.flush()
         os.system("service postgresql restart && echo 1 > /proc/sys/net/ipv4/ip_forward")
-        sys.stdout.write("[ {}DONE{} ]\n".format(bright_green,end))
+        sys.stdout.write("[ %sDONE%s ]\n"%(bright_green,end))
         sys.stdout.flush()
         return menu()
     elif command == 'kill':
-        sys.stdout.write("/ Fermo i servizi ")
+        sys.stdout.write("// Fermo i servizi ")
         sys.stdout.flush()
         os.system("service postgresql stop && echo 0 > /proc/sys/net/ipv4/ip_forward")
-        sys.stdout.write("[ {}DONE{} ]\n".format(bright_green,end))
+        sys.stdout.write("[ %sDONE%s ]\n"%(bright_green,end))
         sys.stdout.flush()
         return menu()
     elif command == 'exit' or command == 'quit':
@@ -216,75 +215,43 @@ def menu():
     #
     elif command == 'updatedb':
         os.system("updatedb")
-        print("[ {}OK{} ] Database aggiornato.".format(bright_green,end))
+        print("[ %sOK%s ] Database aggiornato."%(bright_green,end))
         return menu()
     elif command == 'os':
-        if option:
-            if argument:
-                if argument2:
-                    if argument3:
-                        if argument4:
-                            if argument5:
-                                if argument6:
-                                    if argument7:
-                                        if argument8:
-                                            os.system("{} {} {} {} {} {} {} {} {}".format(option,argument,argument2,argument3,argument4,argument5,argument6,argument7,argument8))
-                                            return menu()
-                                        os.system("{} {} {} {} {} {} {} {}".format(option,argument,argument2,argument3,argument4,argument5,argument6,argument7))
-                                        return menu()
-                                    os.system("{} {} {} {} {} {} {}".format(option,argument,argument2,argument3,argument4,argument5,argument6))
-                                    return menu()
-                                os.system("{} {} {} {} {} {}".format(option,argument,argument2,argument3,argument4,argument5))
-                                return menu()
-                            os.system("{} {} {} {} {}".format(option,argument,argument2,argument3,argument4))
-                            return menu()
-                        os.system("{} {} {} {}".format(option,argument,argument2,argument3))
-                        return menu()
-                    os.system("{} {} {}".format(option,argument,argument2))
-                    return menu()
-                os.system("{} {}".format(option,argument))
-                return menu()
-            os.system("{}".format(option))
-            return menu()
-        else:
-            print("/ {}Errore{}: {}os{} richiede un comando qualunque (massimo 9 argomenti).".format(red,end, blue,end))
+        osc = command_input.split("os")
+        osc = osc[1]
+        os.system(osc)
         return menu()
 
     elif command == 'net_restart':
         os.system("service network-manager restart")
-        print("[ {}OK{} ] Servizio {}network-manager{} riavviato.".format(bright_green,end, blue,end))
+        print("[ %sOK%s ] Servizio %snetwork-manager%s riavviato."%(bright_green,end, blue,end))
         return menu()
     elif command == 'service':
-        if option:
-            if argument == 'start' or argument == 'restart' or argument == 'stop' or argument == 'reload':
-                return menu()
-            else:
-                print("/ {}Errore{}: {}service{} richiede un opzione.".format(red,end, blue,end))
-        else:
-            print("/ {}Errore{}: {}service{} richiede un servizio e un opzione.".format(red,end, blue,end))
+        os.system(command_input)
         return menu()
 
     elif command == 'ifconfig':
         if option:
             if argument:
-                os.system("ifconfig {} {}".format(option,argument))
+                os.system("ifconfig %s %s"%(option,argument))
                 return menu()
-            os.system("ifconfig {}".format(option))
+            os.system("ifconfig %s"%(option))
             return menu()
         try:
-            print("/ Interface    :  " + blue + netifaces.gateways()['default'][netifaces.AF_INET][1] + end)
+            print("// Interface    :  " + blue + netifaces.gateways()['default'][netifaces.AF_INET][1] + end)
         except KeyError:
-            print("/ Interface    :  " + blue + "Nessuna Interfaccia Connessa" + end)
+            print("// Interface    :  " + blue + "Nessuna Interfaccia Connessa" + end)
         try:
-            print("/ Local IP     :  " + blue + [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0] + end)
+            print("// Local IP     :  " + blue + [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0] + end)
         except socket.error:
-            print("/ Local IP     :  " + blue + "Nessuna Connessione" + end)
-        print("/ Mac Address  :  " + blue + ':'.join(re.findall('..', '%012x' % uuid.getnode())) + end)
-        print("/ Gateway      :  " + blue + str(get_gateway()) + end)
+            print("// Local IP     :  " + blue + "Nessuna Connessione" + end)
+        print("// Mac Address  :  " + blue + ':'.join(re.findall('..', '%012x' % uuid.getnode())) + end)
+        print("// Gateway      :  " + blue + str(get_gateway()) + end)
         try:
-            print("/ Public IP    :  " + blue + requests.get('http://ip.42.pl/raw').text + end)
+            print("// Public IP    :  " + blue + requests.get('http://ip.42.pl/raw').text + end)
         except requests.exceptions.ConnectionError:
-            print("/ Public IP    :  " + blue + "Nessuna Connessione" + end)
+            print("// Public IP    :  " + blue + "Nessuna Connessione" + end)
         host = "8.8.8.8"
         port = 53
         timeout = 3
@@ -293,72 +260,72 @@ def menu():
             socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
             pass
         except Exception:
-            print("/ {}Attenzione{}: Nessuna connessione a internet.".format(bright_yellow,end))
-            print("/ {}Attenzione{}: Disattiva {}TorGhost{} o verifica la tua connessione.".format(bright_yellow,end, blue,end))
+            print("// %sAttenzione%s: Nessuna connessione a internet."%(bright_yellow,end))
+            print("// %sAttenzione%s: Disattiva %sTorGhost%s o verifica la tua connessione."%(bright_yellow,end, blue,end))
         return menu()
     elif command == 'ping':
         if option:
-            os.system("ping {}".format(option))
+            os.system("ping %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Ping{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sPing%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     # Spoofing
     elif command == 'macchanger' or command == 'mac':
         os.system("xterm -T 'Changing Mac Address...' -e 'ifconfig wlan0 down && ifconfig eth0 down && macchanger -r wlan0 && macchanger -r eth0 && ifconfig eth0 up && ifconfig wlan0 up && service network-manager restart'")
-        print("[ {}OK{} ] Indirizzo MAC cambiato.".format(bright_green,end))
+        print("[ %sOK%s ] Indirizzo MAC cambiato."%(bright_green,end))
         return menu()
     elif command == 'torghost':
         if option == 'start':
             os.system("xterm -T 'TorGhost' -e 'torghost start'")
-            print("[ {}OK{} ] TorGhost Avviato.".format(bright_green,end))
+            print("[ %sOK%s ] TorGhost Avviato."%(bright_green,end))
             return menu()
         elif option == 'stop':
             os.system("xterm -T 'TorGhost' -e 'torghost stop'")
             os.system('echo "nameserver 8.8.8.8" > /etc/resolv.conf')
-            print("[ {}OK{} ] TorGhost Fermato.".format(bright_green,end))
-            print("[ {}OK{} ] File {}/etc/resolv.conf{} aggiornato.".format(bright_green,end, blue,end))
+            print("[ %sOK%s ] TorGhost Fermato."%(bright_green,end))
+            print("[ %sOK%s ] File %s/etc/resolv.conf%s aggiornato."%(bright_green,end, blue,end))
             return menu()
         else:
-            print("/ {}Errore{}: Argomenti non validi. Usa {}torghost start{} o {}torghost stop{}.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: Argomenti non validi. Usa %storghost start%s o %storghost stop%s."%(red,end, blue,end, blue,end))
             return menu()
 
     # Cracking
     elif command == 'androidpincrack':
         if option:
             if os.path.exists(option) == False:
-                print("/ {}Errore{}: Directory o File non trovati.".format(red,end))
+                print("// %sErrore%s: Directory o File non trovati."%(red,end))
                 return menu()
             if argument:
-                os.system("cd Tools/AndroidPINCrack/ && python AndroidPINCrack.py -H {} -s {}".format(option, argument))
+                os.system("cd Tools/AndroidPINCrack/ && python AndroidPINCrack.py -H %s -s %s"%(option, argument))
             else:
-                print("/ {}Errore{}: {}AndroidPINCrack{} richiede un {}Salt Hash{}.".format(red,end, blue,end, blue,end))
+                print("// %sErrore%s: %sAndroidPINCrack%s richiede un %sSalt Hash%s."%(red,end, blue,end, blue,end))
         else:
-            print("/ {}Errore{}: {}AndroidPINCrack{} richiede il file {}*.key{} e un {}Salt Hash{}.".format(red,end, blue,end, blue,end, blue,end))
+            print("// %sErrore%s: %sAndroidPINCrack%s richiede il file %s*.key%s e un %sSalt Hash%s."%(red,end, blue,end, blue,end, blue,end))
         return menu()
     elif command == 'extract-hash':
         if option:
             if os.path.exists(option) == False:
-                print("/ {}Errore{}: File o Directory non trovati.".format(red,end))
+                print("// %sErrore%s: File o Directory non trovati."%(red,end))
                 return menu()
-            os.system("cd Tools/extract-hashes/ && python extract-hash.py {}".format(option))
+            os.system("cd Tools/extract-hashes/ && python extract-hash.py %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Extract-Hash{} richiede un file per l'estrazione.".format(red,end, blue,end))
+            print("// %sErrore%s: %sExtract-Hash%s richiede un file per l'estrazione."%(red,end, blue,end))
             return menu()
     elif command == 'ioscrack':
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Attenzione{}:".format(bright_yellow,end))
-                print("  Se iTunes e' installato esegui il backup del dispositivo vittima e avvia ioscrack con")
-                print("  {}ioscrack auto{}.".format(blue,end))
-                print("  Se iTunes non e' installato inserisci manualmente la cartella di backup con")
-                print("  {}ioscrack /path/to/backup/folder{}.".format(blue,end))
+                print("// %sAttenzione%s:"%(bright_yellow,end))
+                print("   Se iTunes e' installato esegui il backup del dispositivo vittima e avvia ioscrack con")
+                print("   %sioscrack auto%s."%(blue,end))
+                print("   Se iTunes non e' installato inserisci manualmente la cartella di backup con")
+                print("   %sioscrack /path/to/backup/folder%s."%(blue,end))
                 print("")
-                print("/ {}Comandi IosCrack{}:".format(bright_green,end))
+                print("// %sComandi IosCrack%s:"%(bright_green,end))
                 print(" $ ioscrack <module> ")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ auto / [path/to/backup/folder] ]")
                 print("")
                 return menu()
@@ -367,45 +334,45 @@ def menu():
                 print("")
                 return menu()
             if 'auto' not in option:
-                os.system("cd Tools/iOSRestrictionBruteForce/ && python ioscrack.py -b {} -v".format(option))
+                os.system("cd Tools/iOSRestrictionBruteForce/ && python ioscrack.py -b %s -v"%(option))
                 print("")
                 return menu()
         else:
-            print("/ {}Errore{}: {}IosCrack{} richiede un opzione valida. Digita {}ioscrack -h{} per ulteriori comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sIosCrack%s richiede un opzione valida - %sioscrack -h%s per ulteriori comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'cheetah':
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi Aggiuntivi Cheetah{} ({}http bruteforce{}):".format(bright_green,end, bright_green,end))
+                print("// %sComandi Aggiuntivi Cheetah%s (%shttp bruteforce%s):"%(bright_green,end, bright_green,end))
                 print(" Come usarlo: $ cheetah <host> [path/to/wordlist.txt]")
                 print("")
-                print("/ {}Attenzione{}: Se desideri usare una wordlist diversa da quella di default di Cheetah,".format(bright_yellow,end))
-                print("              inseriscila dopo l'indirizzo come nell'esempio d'uso qui sopra.")
+                print("// %sAttenzione%s: Se desideri usare una wordlist diversa da quella di default di Cheetah,"%(bright_yellow,end))
+                print("               inseriscila dopo l'indirizzo come nell'esempio d'uso qui sopra.")
                 print("")
                 return menu()
             if argument:
                 if os.path.exists(argument) == False:
-                    print("/ {}Errore{}: Wordlist {}{}{} non trovata.".format(red,end, blue,argument,end))
+                    print("// %sErrore%s: Wordlist non trovata."%(red,end))
                     return menu()
-                os.system("cd Tools/cheetah/ && python cheetah.py -u {} -p {}".format(option,argument))
+                os.system("cd Tools/cheetah/ && python cheetah.py -u %s -p %s"%(option,argument))
                 print("")
                 return menu()
-            os.system("cd Tools/cheetah/ && python cheetah.py -u {}".format(option))
+            os.system("cd Tools/cheetah/ && python cheetah.py -u %s"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}Cheetah{} richiede un indirizzo. Digita {}cheetah -h{} per ulteriori comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sCheetah%s richiede un indirizzo. Digita %scheetah -h%s per ulteriori comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'medusa':
         modules_list = ["afp","cvs","ftp","http","imap","mssql","mysql","nntp","pop3","postgres","rdp","rexec","rsh","smbnt","ssh","svn","telnet","vmauthd","vnc","wrapper"]
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi Medusa{}:".format(bright_green,end))
+                print("// %sComandi Medusa%s:"%(bright_green,end))
                 print(" Come usarlo: $ medusa <host> <user> <pswdfile.txt> <module> [threads n. (facoltativo)]")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print("/ afp / cvs / ftp / http / imap / mssql / mysql / nntp / pop3 / postgres / rdp / rexec")
                 print("/ rsh / smbnt / ssh / svn / telnet / vmauthd / vnc / wrapper")
                 print("")
@@ -414,53 +381,53 @@ def menu():
                 if argument:
                     if argument2: # psw file
                         if os.path.exists(argument2) == False:
-                            print("/ {}Errore{}: Wordlist {}{}{} non trovata.".format(red,end, blue,argument2,end))
+                            print("// %sErrore%s: Wordlist %s%s%s non trovata."%(red,end, blue,argument2,end))
                             return menu()
                         if argument3 in modules_list:
                             if argument4:
-                                os.system("xterm -T 'Medusa' -e 'medusa -h {} -u {} -P {} -M {} -t {};echo '';echo Press ENTER To Close;read'".format(option, argument, argument2, argument3,argument4))
+                                os.system("xterm -T 'Medusa' -e 'medusa -h %s -u %s -P %s -M %s -t %s;echo '';echo Press ENTER To Close;read'"%(option, argument, argument2, argument3,argument4))
                                 return menu()
-                            os.system("xterm -T 'Medusa' -e 'medusa -h {} -u {} -P {} -M {};echo '';echo Press ENTER To Close;read'".format(option, argument, argument2, argument3))
+                            os.system("xterm -T 'Medusa' -e 'medusa -h %s -u %s -P %s -M %s;echo '';echo Press ENTER To Close;read'"%(option, argument, argument2, argument3))
                             return menu()
                         else:
-                            print("/ {}Errore{}: Modulo non valido o mancante. Digita {}medusa -h{} per i comandi.".format(red,end, blue,end))
+                            print("// %sErrore%s: Modulo non valido o mancante - %smedusa -h%s per i comandi."%(red,end, blue,end))
                             return menu()
                     else:
-                        print("/ {}Errore{}: Wordlist e Modulo mancanti. Digita {}medusa -h{} per i comandi.".format(red,end, blue,end))
+                        print("// %sErrore%s: Wordlist e Modulo mancanti - %smedusa -h%s per i comandi."%(red,end, blue,end))
                         return menu()
                 else:
-                    print("/ {}Errore{}: Argomenti mancanti. Digita {}medusa -h{} per i comandi.".format(red,end, blue,end))
+                    print("// %sErrore%s: Argomenti mancanti - %smedusa -h%s per i comandi."%(red,end, blue,end))
                     return menu()
             else:
-                print("/ {}Errore{}: Argomenti mancanti. Digita {}medusa -h{} per i comandi.".format(red,end, blue,end))
+                print("// %sErrore%s: Argomenti mancanti - %smedusa -h%s per i comandi."%(red,end, blue,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}Medusa{} richiede una serie di argomenti validi. Digita {}medusa -h{} per i comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sMedusa%s richiede una serie di argomenti validi - %smedusa -h%s per i comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'findmyhash':
         hash_list = ["-h","MD4","MD5","SHA1","SHA224","SHA256","SHA384","SHA512","RMD160","GOST","WHIRLPOOL","LM","NTLM","MYSQL","CISCO7","JUNIPER","LDAP_MD5","LDAP_SHA1"]
         if option:
             if option not in hash_list:
-                print("/ {}Errore{}: Algoritmo non valido.".format(red,end))
+                print("// %sErrore%s: Algoritmo non valido."%(red,end))
                 return menu()
             if option == '-h':
                 print("")
-                print("/ {}Comandi FindMyHash{}:".format(bright_green,end))
+                print("// %sComandi FindMyHash%s:"%(bright_green,end))
                 print(" Come usarlo: $ findmyhash <algorithm> <hash>")
                 print("")
-                print("/ {}Algoritmi{}:".format(bright_green,end))
+                print("// %sAlgoritmi%s:"%(bright_green,end))
                 print(" [ MD4 / MD5 / SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / RMD160 / GOST / WHIRLPOOL / LM ]")
                 print(" [ NTLM / MYSQL / CISCO7 / JUNIPER / LDAP_MD5 / LDAP_SHA1 ]")
                 print("")
                 return menu()
             if argument:
-                os.system("findmyhash {} -h {}".format(option, argument))
+                os.system("findmyhash %s -h %s"%(option, argument))
                 return menu()
             else:
-                print("/ {}Errore{}: Hash mancante.".format(red,end, blue,end))
+                print("// %sErrore%s: Hash mancante."%(red,end, blue,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}FindMyHash{} richiede una serie di argomenti. Digita {}findmyhash -h{} per i comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sFindMyHash%s richiede una serie di argomenti - %sfindmyhash -h%s per i comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'hash-identifier':
         print("")
@@ -468,17 +435,6 @@ def menu():
         logo_menu()
 
     # Sistema
-    elif command == 'shutdown':
-        if option == 'now':
-            os.system("shutdown now")
-        elif option == '-c':
-            os.system("shutdown -c")
-            return menu()
-        os.system("shutdown")
-        return menu()
-    elif command == 'reboot':
-        os.system("reboot")
-        return menu()
     elif command == 'msfconsole' or command == 'msf':
 		os.system("gnome-terminal -- msfconsole")
 		return menu()
@@ -491,8 +447,12 @@ def menu():
 
     # Scanning
     elif command == 'nmap':
+        commands = ['local','dlocal','web','dweb','os','-h']
         if option == None: # Cancella ELSE > questo if e' piu' importante della tua vita caro lettore :)
-            print("/ {}Errore{}: {}Nmap{} richiede un opzione valida - {}nmap -h{} per ulteriori informazioni.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sNmap%s richiede un opzione valida - %snmap -h%s per ulteriori informazioni."%(red,end, blue,end, blue,end))
+            return menu()
+        elif option not in commands:
+            os.system(command_input)
             return menu()
         elif option == 'local':
             os.system("nmap -sn 192.168.1.0/24")
@@ -502,53 +462,38 @@ def menu():
             return menu()
         elif option == 'web':
             if argument:
-                os.system("nmap {}".format(argument))
+                os.system("nmap %s"%(argument))
                 return menu()
             else:
-                print("/ {}Errore{}: {}Nmap{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sNmap%s richiede un indirizzo."%(red,end, blue,end))
                 return menu()
         elif option == 'dweb':
             if argument:
-                os.system("nmap -O -F -A -sN {}".format(argument))
+                os.system("nmap -O -F -A -sN %s"%(argument))
                 return menu()
             else:
-                print("/ {}Errore{}: {}Nmap{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sNmap%s richiede un indirizzo."%(red,end, blue,end))
                 return menu()
         elif option == 'os':
             if argument:
-                os.system("nmap -O {}".format(argument))
+                os.system("nmap -O %s"%(argument))
                 return menu()
             else:
-                print("/ {}Errore{}: {}Nmap{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sNmap%s richiede un indirizzo."%(red,end, blue,end))
                 return menu()
         elif option == '-h':
             print("")
-            print(" / {}Comandi Nmap{}:                                      ".format(bright_green, end))
+            print("// %sComandi Nmap%s:                                      "%(bright_green, end))
             print("  Come usarlo: $ nmap <option> [target]                   ")
             print("                                                          ")
-            print(" / {}Opzioni{}:                                           ".format(bright_green,end))
+            print("// %sOpzioni%s:                                           "%(bright_green,end))
             print(" local    : Scansione rapida locale                       ")
             print(" dlocal   : Scansione dettagliata locale                  ")
             print(" web *    : Scansione sito internet                       ")
             print(" dweb *   : Scansione dettagliata sito internet           ")
             print(" os *     : Scansione dispositivo locale                  ")
-            print(" [custom] : Comando che vuoi (massimo 5 argomenti)        ")
+            print(" [custom] : Comando che vuoi                              ")
             print("")
-            return menu()
-        elif option != 'local' or option != 'dlocal' or option != 'web' or option != 'os' or option != '-h':
-            if argument:
-                if argument2:
-                    if argument3:
-                        if argument4:
-                            os.system("nmap {} {} {} {} {}".format(option, argument, argument2, argument3, argument4))
-                            return menu()
-                        os.system("nmap {} {} {} {}".format(option, argument, argument2, argument3))
-                        return menu()
-                    os.system("nmap {} {} {}".format(option, argument, argument2))
-                    return menu()
-                os.system("nmap {} {}".format(option, argument))
-                return menu()
-            os.system("nmap {}".format(option))
             return menu()
     elif command == 'netdiscover':
         os.system("netdiscover -p")
@@ -557,66 +502,91 @@ def menu():
     # Gathering
     elif command == 'geoip':
         if option:
-            ip1=option
+            target = option
             try:
+                url = "http://ip-api.com/json/"
+                response = urllib2.urlopen(url + target)
+                data = response.read()
+                values = json.loads(data)
+                ip = blue + values['query'] + end
                 try:
-                    url = "http://ip-api.com/json/"
-                    response = urllib2.urlopen(url + ip1)
-                    data = response.read()
-                    values = json.loads(data)
-                    print("")
-                    print("IP              :  " + blue + values['query'] + end)
-                    print("Stato           :  " + blue + values['status'] + end)
-                    try:
-                        print("Regione         :  " + blue + values['regionName'] + end)
-                        print("Nazione         :  " + blue + values['country'] + end)
-                        print("Citta'          :  " + blue + values['city'] + end)
-                        print("Provider:       :  " + blue + values['isp'] + end)
-                        print("Lat. / Long.    :  " + blue + str(values['lat']) + " / " + str(values['lon']) + end)
-                        print("Codice Postale  :  " + blue + values['zip'] + end)
-                        print("Fuso orario     :  " + blue + values['timezone'] + end)
-                        print("Gestore         :  " + blue + values['as'] + end)
-                        print("Google Maps     :  {}https://www.google.com/maps/search/?api=1&query={},{}{}".format(blue, str(values['lat']), str(values['lon']), end))
-                        print("")
-                        return menu()
-                    except KeyError:
-                        print("")
-                        return menu()
-                except socket.timeout:
-                    print("/ {}Attenzione{}: Nessuna connessione a internet.".format(bright_yellow,end))
-                    print("/ {}Attenzione{}: Disattiva {}TorGhost{} o verifica la tua connessione.".format(bright_yellow,end,blue,end))
-                    return menu()
+                    country = values['country']
+                except KeyError:
+                    country = "-"
+                try:
+                    region = values['regionName']
+                except KeyError:
+                    region = "-"
+                try:
+                    city = values['city']
+                except KeyError:
+                    city = "-"
+                try:
+                    zip_code = values['zip']
+                except KeyError:
+                    zip_code = "-"
+                try:
+                    isp = red + values['isp'] + end
+                except KeyError:
+                    isp = "-"
+                try:
+                    gestore = red + values['as'] + end
+                except KeyError:
+                    gestore = "-"
+                try:
+                    lat_lon = bright_green + str(values['lat']) + " / " + str(values['lon']) + end
+                except KeyError:
+                    lat_lon = "-"
+                try:
+                    timezone = bright_green + values['timezone'] + end
+                except KeyError:
+                    timezone = "-"
+                try:
+                    maps = "%shttps://www.google.com/maps/search/?api=1&query=%s,%s%s"%(bright_green, str(values['lat']), str(values['lon']), end)
+                except KeyError:
+                    maps = "-"
+                print("// IP        - %s"%(ip))
+                print("// Nazione   - %s"%(country))
+                print("// Regione   - %s"%(region))
+                print("// Citta'    - %s"%(city))
+                print("// C.Postale - %s"%(zip_code))
+                print("// Provider  - %s"%(isp))
+                print("// Gestore   - %s"%(gestore))
+                print("// Lat/Long  - %s"%(lat_lon))
+                print("// F.Orario  - %s"%(timezone))
+                print("// G.Maps    - %s"%(maps))
+            except socket.timeout:
+                print("// %sErrore%s: Nessuna Connessione."%(red,end))
             except urllib2.URLError:
-                print("/ {}Attenzione{}: Nessuna connessione a internet.".format(bright_yellow,end))
-                print("/ {}Attenzione{}: Disattiva {}TorGhost{} o verifica la tua connessione.".format(bright_yellow,end,blue,end))
-                return menu()
+                print("// %sErrore%s: Nessuna Connessione."%(red,end))
+            return menu()
         else:
-            print("/ {}Errore{}: {}Geoip{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sGeoip%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'whois':
         if option:
-            os.system("whois -H {}".format(option))
+            os.system("whois -H %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Whois{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sWhois%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'maltego':
         os.system("gnome-terminal -- maltego")
         return menu()
     elif command == 'sn1per':
         if option:
-            os.system("cd Tools/Sn1per/ && ./sniper {}".format(option))
+            os.system("cd Tools/Sn1per/ && ./sniper %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Sn1per{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sSn1per%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'dmitry':
         if option:
-            os.system("dmitry {} -i -w -s -e -p -o Logs/dmitry_log".format(option))
-            print("\n/ Informazioni salvate in {}Logs/dmitry_log.txt{}".format(blue,end))
+            os.system("dmitry %s -i -w -s -e -p -o Logs/dmitry_log"%(option))
+            print("\n// Informazioni salvate in %sLogs/dmitry_log.txt%s"%(blue,end))
             return menu()
         else:
-            print("/ {}Errore{}: {}Dmitry{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sDmitry%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'red_hawk' or command_input == 'red hawk':
         os.system("gnome-terminal -- php " + os.getcwd() + "/Tools/RED_HAWK/rhawk.php")
@@ -633,29 +603,29 @@ def menu():
                 job_list = option.split()
                 print("")
                 for elements in job_list:
-                    os.system('echo "{}" > Logs/inspy.txt'.format(elements))
-                    print("Ricerca: / {}{}{}".format(blue,elements,end))
-                os.system("inspy --empspy Logs/inspy.txt {}".format(argument))
+                    os.system('echo "%s" > Logs/inspy.txt'%(elements))
+                    print("Ricerca: // %s%s%s"%(blue,elements,end))
+                os.system("inspy --empspy Logs/inspy.txt %s"%(argument))
                 os.system("rm Logs/inspy.txt")
                 print("")
                 return menu()
             else:
-                print("/ {}Errore{}: {}Inspy{} richiede un {}Luogo{}.".format(red,end, blue,end, blue,end))
+                print("// %sErrore%s: %sInspy%s richiede un %sLuogo%s."%(red,end, blue,end, blue,end))
         else:
-            print("/ {}Errore{}: {}Inspy{} richiede un {}Mestiere{} ed un {}Luogo{}.".format(red,end, blue,end, blue,end, blue,end))
+            print("// %sErrore%s: %sInspy%s richiede un %sMestiere%s ed un %sLuogo%s."%(red,end, blue,end, blue,end, blue,end))
         return menu()
     elif command == 'tulpar':
         modules_list = ["-h","links","e-mail","sql","xss","crawl","whois"]
         if option:
             if option not in modules_list:
-                print("/ {}Errore{}: {}Modulo{} non valido.".format(red,end, blue,end))
+                print("// %sErrore%s: Modulo non valido."%(red,end))
                 return menu()
             if option == '-h':
                 print("")
-                print("/ {}Comandi tulpar{}:".format(bright_green,end))
+                print("// %sComandi tulpar%s:"%(bright_green,end))
                 print(" Come usarlo: $ tulpar <modulo> <indirizzo>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ links / e-mail / sql / xss / crawl / whois ]")
                 print("")
                 return menu()
@@ -665,19 +635,19 @@ def menu():
                     target = "http://"+argument
                 if 'http://' in argument or 'https://' in argument:
                     pass
-                os.system("cd Tools/tulpar/ && python tulpar.py {} {}".format(option,target))
+                os.system("cd Tools/tulpar/ && python tulpar.py %s %s"%(option,target))
                 return menu()
             else:
-                print("/ {}Errore{}: {}Tulpar{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sTulpar%s richiede un indirizzo."%(red,end, blue,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}Tulpar{} richiede un modulo e un indirizzo - {}tulpar -h{} per ulteriori comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sTulpar%s richiede un modulo e un indirizzo - %stulpar -h%s per ulteriori comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'credmap':
         if option:
-            os.system("cd Tools/credmap && python credmap.py --email {}".format(option))
+            os.system("cd Tools/credmap && python credmap.py --email %s"%(option))
         else:
-            print("/ {}Errore{}: {}Credmap{} richiede un {}username{} o un {}indirizzo email{}.".format(red,end, blue,end, blue,end, blue,end))
+            print("// %sErrore%s: %sCredmap%s richiede un %susername%s o un %sindirizzo email%s."%(red,end, blue,end, blue,end, blue,end))
         return menu()
     elif command == 'theharvester':
         if option:
@@ -691,36 +661,36 @@ def menu():
             if "www." in option or "www." in target:
                 target = option.split("www.")
                 target = target[1]
-            os.system("theharvester -d {} -b all -v -n -t".format(target))
+            os.system("theharvester -d %s -b all -v -n -t"%(target))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}TheHarvester{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sTheHarvester%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
 
     # WebApp
     elif command == 'ipmipwn':
         if option:
-            os.system("cd Tools/IPMIPWN/ && python ipmipwn.py {}".format(option))
+            os.system("cd Tools/IPMIPWN/ && python ipmipwn.py %s"%(option))
             return menu()
         else:
-            print("/ {}Attenzione{}: Assicurati che l'host abbia la porta 623 aperta. Questo tool utilizza la ".format(bright_yellow,end))
+            print("// %sAttenzione%s: Assicurati che l'host abbia la porta 623 aperta. Questo tool utilizza la "%(bright_yellow,end))
             print("              vulnerabilita' 'Cipher 0' per il bypass dell'autenticazione.")
             print("")
-            print("/ {}Errore{}: {}Ipmipwn{} richiede un indirizzo.".format(red,end, blue, end))
+            print("// %sErrore%s: %sIpmipwn%s richiede un indirizzo."%(red,end, blue, end))
             return menu()
     elif command == 'intrace':
         if option:
             if 'https://' in option:
-                os.system("intrace -h {} -p 443 -s 4".format(option))
+                os.system("intrace -h %s -p 443 -s 4"%(option))
                 print("")
                 return menu()
             if 'http://' in option or 'http://' not in option:
-                os.system("intrace -h {} -p 80 -s 4".format(option))
+                os.system("intrace -h %s -p 80 -s 4"%(option))
                 print("")
                 return menu()
         else:
-            print("/ {}Errore{}: {}InTrace{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sInTrace%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'miranda':
         os.system("gnome-terminal -- miranda")
@@ -735,9 +705,9 @@ def menu():
         # DDoS
     elif command == 'xerxes':
         if option:
-            os.system("xterm -T 'Xerxes' -e './Tools/xerxes/xerxes {} 80'".format(option))
+            os.system("xterm -T 'Xerxes' -e './Tools/xerxes/xerxes %s 80'"%(option))
         else:
-            print("/ {}Errore{}: {}Xerxes{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sXerxes%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'ufonet':
         os.system("xterm -T 'UfoNet' -e 'cd Tools/ufonet/ && ./ufonet --download-zombies'")
@@ -749,47 +719,48 @@ def menu():
         logo_menu()
     elif command == 'goldeneye':
         if option:
+            target = option
             if 'http://' not in option:
-                os.system("gnome-terminal -- goldeneye http://{} -m random".format(option))
-                return menu()
+                target = "http://" + option
             if 'http://' or 'https://' in option:
-                os.system("gnome-terminal -- goldeneye {} -m random".format(option))
-                return menu()
+                pass
+            os.system("gnome-terminal -- goldeneye %s -m random"%(target))
+            return menu()
         else:
-            print("/ {}Errore{}: {}Goldeneye{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sGoldeneye%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'torshammer':
         if option:
-            os.system("xterm -T 'TorShammer' -e 'python Tools/torshammer/torshammer.py -t {}'".format(option))
+            os.system("xterm -T 'TorShammer' -e 'python Tools/torshammer/torshammer.py -t %s'"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Torshammer{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sTorshammer%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 't50':
         if option:
-            os.system("gnome-terminal -- t50 {} --flood --turbo".format(option))
+            os.system("gnome-terminal -- t50 %s --flood --turbo"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}t50{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %st50%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'thcssldos':
         if option:
-            if 'www.' in option or '.' not in option:
-                print("/ {}Errore{}: Ti sembra un indirizzo IP?".format(red,end))
+            if 'www.' in option or '.' not in option or len(option) < 7:
+                print("// %sErrore%s: Indirizzo IP non valido."%(red,end))
                 return menu()
             try:
                 if int(argument):
-                    os.system("thc-ssl-dos {} {} --accept".format(option, argument))
+                    os.system("thc-ssl-dos %s %s --accept"%(option, argument))
                     print("")
                     return menu()
             except TypeError:
-                print("/ {}Errore{}: {}Thc-Ssl-Dos{} richiede una porta valida.".format(red,end, blue, end))
+                print("// %sErrore%s: %sThc-Ssl-Dos%s richiede una porta."%(red,end, blue, end))
                 return menu()
             except ValueError:
-                print("/ {}Errore{}: Ti sembra una porta {}{}{}?".format(red,end, blue,argument,end))
+                print("// %sErrore%s: Porta non valida."%(red,end, blue,argument,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}Thc-Ssl-Dos{} richiede un indirizzo IP e una Porta.".format(red,end, blue,end))
+            print("// %sErrore%s: %sThc-SSL-Dos%s richiede un indirizzo IP e una Porta."%(red,end, blue,end))
             return menu()
 
         #injection
@@ -797,86 +768,86 @@ def menu():
         modules_list = ["-h","scan", "inj"]
         if option:
             if option not in modules_list:
-                print("/ {}Errore{}: Modulo non valido. Digita {}sqlmap -h{} per i comandi.".format(red,end, blue,end))
+                print("// %sErrore%s: Modulo non valido. Digita %ssqlmap -h%s per i comandi."%(red,end, blue,end))
                 return menu()
             if option == '-h':
                 print("")
-                print("/ {}Attenzione{}:".format(bright_yellow,end))
+                print("// %sAttenzione%s:"%(bright_yellow,end))
                 print(" <database>, <table>, <column(s)> vanno inseriti con l'avanzare dell'attacco.")
-                print(" Per ottenere <database>   col modulo {}inj{}, digita {}sqlmap inj <target>{}.".format(blue,end, blue,end))
-                print(" Per ottenere <table>      col modulo {}inj{}, digita {}sqlmap inj <target> <database>{}.".format(blue,end, blue,end))
-                print(" Per ottenere <column(s)>  col modulo {}inj{}, digita {}sqlmap inj <target> <database> <table>{}.".format(blue,end, blue,end))
-                print(" Per ottenere il contenuto di <column(s)>, digita: \n {}sqlmap inj <target> <database> <table> <column(s)>{}.".format(blue,end))
+                print(" Per ottenere <database>   col modulo %sinj%s, digita %ssqlmap inj <target>%s."%(blue,end, blue,end))
+                print(" Per ottenere <table>      col modulo %sinj%s, digita %ssqlmap inj <target> <database>%s."%(blue,end, blue,end))
+                print(" Per ottenere <column(s)>  col modulo %sinj%s, digita %ssqlmap inj <target> <database> <table>%s."%(blue,end, blue,end))
+                print(" Per ottenere il contenuto di <column(s)>, digita: \n %ssqlmap inj <target> <database> <table> <column(s)>%s."%(blue,end))
                 print("")
-                print("/ {}Attenzione{}:".format(bright_yellow,end))
-                print(" Nel modulo {}inj{}, per ottenete informazioni da piu' colonne contemporaneamente inserisci".format(blue,end))
+                print("// %sAttenzione%s:"%(bright_yellow,end))
+                print(" Nel modulo %sinj%s, per ottenete informazioni da piu' colonne contemporaneamente inserisci"%(blue,end))
                 print(" <column(s)> nel seguente modo:")
-                print(" {}<column>,<column>,<column>,...{}".format(blue,end))
+                print(" %s<column>,<column>,<column>,...%s"%(blue,end))
                 print("")
-                print("/ {}Comandi Sqlmap{}:".format(bright_green,end))
+                print("// %sComandi Sqlmap%s:"%(bright_green,end))
                 print(" Come usarlo: $ sqlmap [modulo] <target> [<database> <table> <column(s)>]")
                 print(" ==> $ sqlmap scan <target>")
                 print(" ==> $ sqlmap inj  <target> <database> <table> <columns>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ scan / inj ]")
                 print("")
                 return menu()
             elif option == 'scan':
                 if argument:
-                    os.system("sqlmap -g {}".format(argument))
+                    os.system("sqlmap -g %s"%(argument))
                     return menu()
                 else:
-                    print("/ {}Errore{}: Modulo {}scan{} richiede un indirizzo.".format(red,end, blue,end))
+                    print("// %sErrore%s: Modulo %sscan%s richiede un indirizzo."%(red,end, blue,end))
                     return menu()
             elif option == 'inj':
                 if argument:
                     if argument2:
                         if argument3:
                             if argument4:
-                                os.system("sqlmap -u {} -D {} -T {} -C {} --dump".format(argument,argument2,argument3,argument4))
+                                os.system("sqlmap -u %s -D %s -T %s -C %s --dump"%(argument,argument2,argument3,argument4))
                                 return menu()
-                            os.system("sqlmap -u {} -D {} -T {} --columns".format(argument,argument2,argument3))
+                            os.system("sqlmap -u %s -D %s -T %s --columns"%(argument,argument2,argument3))
                             return menu()
-                        os.system("sqlmap -u {} -D {} --tables".format(argument,argument2))
+                        os.system("sqlmap -u %s -D %s --tables"%(argument,argument2))
                         return menu()
-                    os.system("sqlmap -u {} --dbs".format(argument))
+                    os.system("sqlmap -u %s --dbs"%(argument))
                     return menu()
                 else: # if argument
-                    print("/ {}Errore{}: Modulo {}inj{} richiede un indirizzo.".format(red,end, blue,end))
+                    print("// %sErrore%s: Modulo %sinj%s richiede un indirizzo."%(red,end, blue,end))
                     return menu()
         else: # if option
-            print("/ {}Errore{}: {}Sqlmap{} richiede una serie di argomenti. Digita {}sqlmap -h{} per i comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sSqlmap%s richiede una serie di argomenti. Digita %ssqlmap -h%s per i comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'sqliv':
         if option == '-h':
                 print("")
-                print("/ {}Comandi Sqliv{}:".format(bright_green,end))
+                print("// %sComandi Sqliv%s:"%(bright_green,end))
                 print(" Come usarlo: $ sqliv [modulo] <target>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ web / dork ]")
                 print("")
                 return menu()
         if option == 'dork':
             if argument:
-                os.system("python Tools/sqliv/sqliv.py -e google -d {} -p 20".format(argument))
+                os.system("python Tools/sqliv/sqliv.py -e google -d %s -p 20"%(argument))
                 os.system("xterm -T 'Moving...' -e 'rm Logs/searches.txt && mv searches.txt Logs/'")
             else:
-                print("/ {}Errore{}: {}Sqliv{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sSqliv%s richiede un indirizzo."%(red,end, blue,end))
         elif option == 'web':
             if argument:
-                os.system("python Tools/sqliv/sqliv.py -e google -t {} -p 20".format(argument))
+                os.system("python Tools/sqliv/sqliv.py -e google -t %s -p 20"%(argument))
             else:
-                print("/ {}Errore{}: {}Sqliv{} richiede un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sSqliv%s richiede un indirizzo."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: argomenti mancanti per {}Sqliv{}. Digita {}sqliv -h{} per aiuto.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: argomenti mancanti per %sSqliv%s. Digita %ssqliv -h%s per aiuto."%(red,end, blue,end, blue,end))
         return menu()
     elif command == 'commix':
         if option:
             if option == '-h':
                 print("")
-                print(" / {}Comandi Commix Aggiuntivi{}:".format(bright_green,end))
+                print("// %sComandi Commix Aggiuntivi%s:"%(bright_green,end))
                 print("  Uso: $ commix <indirizzo> [opzioni]")
                 print("")
                 print("  l3          : Usa livello 3 per l'injection (lento)")
@@ -884,18 +855,18 @@ def menu():
                 print("")
                 return menu()
             if argument == 'l3' and argument2 == 'shellshock' or argument == 'shellshock' and argument2 == 'l3':
-                print("/ {}Errore{}: {}shellshock{} e {}l3{} non possono essere usati insieme.".format(red,end, blue,end, blue,end))
+                print("// %sErrore%s: %sshellshock%s e %sl3%s non possono essere usati insieme."%(red,end, blue,end, blue,end))
                 return menu()
             elif argument == 'l3':
-                os.system("commix -u {} --ignore-401 --random-agent --force-ssl --all --level=3".format(option))
+                os.system("commix -u %s --ignore-401 --random-agent --force-ssl --all --level=3"%(option))
                 return menu()
             elif argument == 'shellshock':
-                os.system("commix -u {} --ignore-401 --random-agent --force-ssl --all --shellshock".format(option))
+                os.system("commix -u %s --ignore-401 --random-agent --force-ssl --all --shellshock"%(option))
                 return menu()
-            os.system("commix -u {} --ignore-401 --random-agent --force-ssl --all".format(option))
+            os.system("commix -u %s --ignore-401 --random-agent --force-ssl --all"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Commix{} richiede un indirizzo. Digita {}commix -h{} per ulteriori comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sCommix%s richiede un indirizzo. Digita %scommix -h%s per ulteriori comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'jsql':
         os.system("gnome-terminal -- jsql")
@@ -911,76 +882,75 @@ def menu():
         return menu()
     elif command == 'cewl':
         if option:
-            os.system("cewl --email -a --no-words {}".format(option))
+            os.system("cewl --email -a --no-words %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}CeWL{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sCeWL%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
 
         # Scanning
     elif command == 'cpscan':
         if option:
             if '.' not in option:
-                print("/ {}Errore{}: Inserisci un indirizzo valido.".format(red,end))
+                print("// %sErrore%s: Inserisci un indirizzo valido."%(red,end))
                 return menu()
-            os.system("xterm -T 'Cpscan' -e 'cd Tools/cpscan/ && python cpscan.py -t {} -v'".format(option))
+            os.system("xterm -T 'Cpscan' -e 'cd Tools/cpscan/ && python cpscan.py -t %s -v'"%(option))
         else:
-            print("/ {}Errore{}: {}Cpscan{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sCpscan%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'breacher':
         if option:
             if '.' not in option:
-                print("/ {}Errore{}: Inserisci un indirizzo valido.".format(red,end, blue,end))
+                print("// %sErrore%s: Inserisci un indirizzo valido."%(red,end, blue,end))
                 return menu()
-            os.system("cd Tools/Breacher/ && python breacher.py -u {}".format(option))
+            os.system("cd Tools/Breacher/ && python breacher.py -u %s"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}Breacher{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sBreacher%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'dotdotpwn':
         if option:
             print("")
-            os.system("dotdotpwn -m http -h {} -O -s".format(option))
+            os.system("dotdotpwn -m http -h %s -O -s"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}DotDotPwn{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sDotDotPwn%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'parsero':
         if option:
-            os.system("parsero -u {} -sb".format(option))
+            os.system("parsero -u %s -sb"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Parsero{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sParsero%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'angryfuzzer':
         if option:
             if 'http://' not in option:
-                os.system("cd Tools/angryFuzzer/ && python angryFuzzer.py -u http://{} -q".format(option))
+                os.system("cd Tools/angryFuzzer/ && python angryFuzzer.py -u http://%s -q"%(option))
                 return menu()
             if 'http://' in option or 'https://' in option:
-                os.system("cd Tools/angryFuzzer/ && python angryFuzzer.py -u {} -q".format(option))
+                os.system("cd Tools/angryFuzzer/ && python angryFuzzer.py -u %s -q"%(option))
                 return menu()
         else:
-            print("/ {}Errore{}: {}AngryFuzzer{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sAngryFuzzer%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'dirb':
         if option:
-            print("/ Salvataggio della ricerca al termine di DIRB in {}Logs/DIRB.txt{}".format(blue,end))
+            target = option
+            print("// Salvataggio della ricerca al termine di DIRB in %sLogs/DIRB.txt%s"%(blue,end))
             if 'http://' not in option:
-                os.system("gnome-terminal -- dirb http://{} -f -l -w -o Logs/DIRB.txt".format(option))
-                return menu()
+                target = "http://" + option
             if 'http://' in option or 'https://' in option:
-                os.system("gnome-terminal -- dirb {} -f -l -w -o Logs/DIRB.txt".format(option))
-                return menu()
+                pass
+            os.system("gnome-terminal -- dirb %s -f -l -w -o Logs/DIRB.txt"%(target))
         else:
-            print("/ {}Errore{}: {}DIRB{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sDIRB%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'dirbuster':
         os.system("gnome-terminal -- dirbuster")
         return menu()
-
     elif command == 'dtect':
         os.system("gnome-terminal -- python " + os.getcwd() + "/Tools/D-TECT/d-tect.py")
         return menu()
@@ -993,24 +963,21 @@ def menu():
         return menu()
     elif command == 'arachni':
         if option:
+            target = option
             if 'http://' in option or 'https://' in option:
-                print("/ {}Attenzione{}: Premi {}Ctrl + C{} per fermare la scansione.".format(bright_yellow,end, blue,end))
-                print("/ Piu' lunga la scansione, piu' info per te.\n")
-                time.sleep(2)
-                os.system("arachni {}".format(option))
-                return menu()
+                pass
             elif 'http://' not in option:
-                os.system("arachni http://{}".format(option))
-                return menu()
+                target = "http://" + option
+            os.system("arachni %s"%(target))
         else:
-            print("/ {}Errore{}: {}Arachni{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sArachni%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'wpscan':
         if option:
-            os.system("wpscan {}".format(option))
+            os.system("wpscan %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Wpscan{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sWpscan%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'zaproxy':
         os.system("gnome-terminal -- zaproxy")
@@ -1020,39 +987,38 @@ def menu():
         return menu()
     elif command == 'uniscan':
         if option:
-            os.system("uniscan -u {} -qwedsg".format(option))
+            os.system("uniscan -u %s -qwedsg"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Uniscan{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sUniscan%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'droopescan':
         if option:
+            modules = ['drupal','joomla','moodle','silverstripe','wordpress','-h']
             if option == '-h':
                 print("")
-                print("/ {}Comandi Droopescan{}:".format(bright_green,end))
+                print("// %sComandi Droopescan%s:"%(bright_green,end))
                 print(" Come usarlo: $ droopescan <module> <target>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ drupal / joomla / moodle / silverstripe / wordpress ]")
                 print("")
                 return menu()
-            elif option == 'drupal' or option == 'joomla' or option == 'moodle' or option == 'silverstripe' or option == 'wordpress':
+            elif option in modules:
                 if argument:
+                    target = argument
                     if 'http://' not in argument:
-                        os.system("droopescan scan {} -u http://{}".format(option, argument))
-                        return menu()
+                        target = "http://" + argument
                     if 'http://' in argument or 'https://' in argument:
-                        os.system("droopescan scan {} -u {}".format(option, argument))
-                        return menu()
+                        pass
+                    os.system("droopescan scan %s -u http://%s"%(option, target))
                 else:
-                    print("/ {}Errore{}: {}Droopescan{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                    print("// %sErrore%s: %sDroopescan%s richiede un indirizzo."%(red,end, blue,end))
             else:
-                print("/ {}Errore{}: {}Droopescan{} richiede un modulo valido.".format(red,end, blue,end))
-                return menu()
+                print("// %sErrore%s: Modulo non valido."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: {}Droopescan{} richiede una serie di argomenti. Digita {}droopescan -h{} per i comandi.".format(red,end, blue,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sDroopescan%s richiede una serie di argomenti - %sdroopescan -h%s per i comandi."%(red,end, blue,end, blue,end))
+        return menu()
     elif command == 'bingoo':
         os.system("cd Tools/BinGoo/ && ./bingoo")
         logo_menu()
@@ -1061,9 +1027,9 @@ def menu():
         logo_menu()
     elif command == 'xsssniper':
         if option:
-            os.system("cd Tools/xsssniper/ && python xsssniper.py -u {} --crawl".format(option))
+            os.system("cd Tools/xsssniper/ && python xsssniper.py -u %s --crawl"%(option))
         else:
-            print("/ {}Errore{}: {}Xsssniper{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sXsssniper%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'striker':
         os.system("cd Tools/Striker/ && python striker.py")
@@ -1072,139 +1038,133 @@ def menu():
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi Hping3{}:".format(bright_green,end))
+                print("// %sComandi Hping3%s:"%(bright_green,end))
                 print("Come usarlo: $ hping3 <modulo> <target>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print("[ scan / stress ]")
                 print("")
                 return menu()
             elif option == 'scan':
                 if argument:
                     print("")
-                    os.system("hping3 --scan 1-30,70-500 -S {}".format(argument))
+                    os.system("hping3 --scan 1-30,70-500 -S %s"%(argument))
                     print("")
                     return menu()
                 else:
-                    print("/ {}Errore{}: {}Hping3{} richiede un indirizzo.".format(red,end, blue,end))
+                    print("// %sErrore%s: %sHping3%s richiede un indirizzo."%(red,end, blue,end))
                     return menu()
             elif option == 'stress':
                 print("")
-                os.system("hping3 --flood {}".format(argument))
+                os.system("hping3 --flood %s"%(argument))
                 print("")
                 return menu()
             else:
-                print("/ {}Errore{}: {}Hping3{} richiede un modulo valido e un indirizzo.".format(red,end, blue,end))
+                print("// %sErrore%s: %sHping3%s richiede un modulo valido e un indirizzo."%(red,end, blue,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}Hping3{} richiede un modulo valido e un indirizzo. Digita {}hping -h{} per i comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sHping3%s richiede un modulo valido e un indirizzo - %shping -h%s per i comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'sslyze':
         if option:
-            os.system("sslyze --regular {}".format(option))
+            os.system("sslyze --regular %s"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Sslyze{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sSslyze%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'nikto':
         if option:
-            os.system("nikto -host {}".format(option))
+            os.system("nikto -host %s"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}Nikto{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sNikto%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'blindelephant':
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi BlindElephant{}:".format(bright_green,end))
+                print("// %sComandi BlindElephant%s:"%(bright_green,end))
                 print(" Come usarlo: $ blindelephant <module> <target>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ drupal / wordpress ]")
                 print("")
                 return menu()
             elif option == 'drupal' or option == 'wordpress':
                 if argument:
+                    target = argument
                     if 'http://' not in argument:
-                        os.system("BlindElephant.py http://{} {}".format(argument, option))
-                        print("")
-                        return menu()
+                        target = "http://" + argument
                     if 'http://' in argument or 'https://' in argument:
-                        os.system("BlindElephant.py {} {}".format(argument, option))
-                        print("")
-                        return menu()
+                        pass
+                    os.system("BlindElephant.py %s %s"%(target, option))
+                    print("")
                 else:
-                    print("/ {}Errore{}: {}BlindElephant{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                    print("// %sErrore%s: %sBlindElephant%s richiede un indirizzo."%(red,end, blue,end))
             else:
-                print("/ {}Errore{}: {}BlindElephant{} richiede un modulo valido.".format(red,end, blue,end))
-                return menu()
+                print("// %sErrore%s: %sBlindElephant%s richiede un modulo valido."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: {}BlindElephant{} richiede una serie di argomenti - {}blindelephant -h{} per i comandi.".format(red,end, blue,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sBlindElephant%s richiede una serie di argomenti - %sblindelephant -h%s per i comandi."%(red,end, blue,end, blue,end))
+        return menu()
     elif command == 'cutycapt':
         if option:
+            target = option
             if 'http://' not in option:
-                print("/ Attendi il termine del processo se eseguito correttamente.")
-                os.system("gnome-terminal -- cutycapt --url=={} --out==Logs/cutycapt_screenshot.png".format(option))
-                return menu()
+                target = "http://" + option
             elif 'http://' in option or 'https://' in option:
-                print("/ Attendi il termine del processo se eseguito correttamente.")
-                os.system("gnome-terminal -- cutycapt --url=={} --out==Logs/cutycapt_screenshot.png".format(option))
-                return menu()
+                pass
+            print("// Attendi il termine del processo se eseguito correttamente.")
+            os.system("gnome-terminal -- cutycapt --url==%s --out==Logs/cutycapt_screenshot.png"%(target))
         else:
-            print("/ {}Errore{}: {}CutyCapt{} richiede un indirizzo da 'screenshottare'.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sCutyCapt%s richiede un indirizzo da 'screenshottare'."%(red,end, blue,end))
+        return menu()
     elif command == 'fimap':
         if option:
+            target = option
             print("")
             if 'http://' not in option:
-                os.system("fimap -u http://{} -4 -C -D --force-run".format(option))
-                print("")
-                return menu()
+                target = "http://" + option
             if 'http://' in option or 'https://' in option:
-                os.system("fimap -u {} -4 -C -D --force-run".format(option))
-                print("")
-                return menu()
+                pass
+            os.system("fimap -u %s -4 -C -D --force-run"%(target))
+            print("")
         else:
-            print("/ {}Errore{}: {}Fimap{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sFimap%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'uatester':
         if option:
-            os.system("ua-tester -u {} -d MDCTBX -v".format(option))
+            os.system("ua-tester -u %s -d MDCTBX -v"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Ua-Tester{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sUa-Tester%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'vega':
         os.system("gnome-terminal -- vega")
         return menu()
     elif command == 'infoga':
         if option:
-            os.system("cd Tools/Infoga/ && python infoga.py -d {} -s all -v 3".format(option))
+            os.system("cd Tools/Infoga/ && python infoga.py -d %s -s all -v 3"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Infoga{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sInfoga%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
 
     # enum
     elif command == 'sublist3r':
         if option:
-            os.system("sublist3r -d {} -p 80 -v".format(option))
+            os.system("sublist3r -d %s -p 80 -v"%(option))
         else:
-            print("/ {}Errore{}: {}Sublist3r{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sSublist3r%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'dnsenum':
         if option:
             print("")
-            os.system("dnsenum -u a -v {}".format(option))
+            os.system("dnsenum -u a -v %s"%(option))
             print("")
-            return menu()
         else:
-            print("/ {}Errore{}: {}Dnsenum{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sDnsenum%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'dnsmap':
         if option:
             target = option
@@ -1218,129 +1178,117 @@ def menu():
                 target = option.split("www.")
                 target = target[1]
             print("")
-            os.system("dnsmap {}".format(target))
+            os.system("dnsmap %s"%(target))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}Dnsmap{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sDnsmap%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'smtpuserenum':
         if option:
             if option == '-h':
                 print("")
-                print("/ Questo Tool verifica se un utente/una lista di utenti esiste")
-                print("/ {}Comandi Smtp-User-Enum{}:".format(bright_green,end))
+                print("// Questo Tool verifica se un utente/una lista di utenti esiste")
+                print("// %sComandi Smtp-User-Enum%s:"%(bright_green,end))
                 print(" Come usarlo: $ smtpuserenum <user/user_list.txt> <indirizzo>")
                 print("")
                 return menu()
             if '.txt' in option or '.lst' in option:
                 if argument:
                     if os.path.exists(option) == False:
-                        print("/ {}Errore{}: Directory o File non trovati.".format(red,end))
+                        print("// %sErrore%s: Directory o File non trovati."%(red,end))
                         return menu()
-                    os.system("smtp-user-enum -M VRFY -U {} -t {}".format(option,argument))
+                    os.system("smtp-user-enum -M VRFY -U %s -t %s"%(option,argument))
                     print("")
-                    return menu()
                 else:
-                    print("/ {}Errore{}: {}Smtp-User-Enum{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                    print("// %sErrore%s: %sSmtp-User-Enum%s richiede un indirizzo."%(red,end, blue,end))
+                return menu()
             if argument:
-                os.system("smtp-user-enum -M VRFY -u {} -t {}".format(option,argument))
+                os.system("smtp-user-enum -M VRFY -u %s -t %s"%(option,argument))
                 print("")
-                return menu()
             else:
-                print("/ {}Errore{}: {}Smtp-User-Enum{} richiede un indirizzo.".format(red,end, blue,end))
-                return menu()
+                print("// %sErrore%s: %sSmtp-User-Enum%s richiede un indirizzo."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: {}Smtp-User-Enum{} richiede degli argomenti. Digita {}smtpuserenum -h{} per i comandi.".format(red,end, blue,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sSmtp-User-Enum%s richiede degli argomenti - %ssmtpuserenum -h%s per i comandi."%(red,end, blue,end, blue,end))
+        return menu()
 
     elif command == 'jaidam':
         os.system("cd Tools/Jaidam/ && python jaidam.py")
         logo_menu()
     elif command == 'sshscan':
         if option:
-            os.system("python Tools/SSHScan/sshscan.py -t {}".format(option))
+            os.system("python Tools/SSHScan/sshscan.py -t %s"%(option))
             print("")
         else:
-            print("/ {}Errore{}: {}SSHScan{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sSSHScan%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'pentmenu':
         os.system("./Tools/pentmenu/pentmenu")
         logo_menu()
     elif command == 'a2sv':
         if option:
+            port = 80
             if 'https://' in option:
-                os.system("a2sv -t {} -p 443".format(option))
-                return menu()
-            if 'http://' in option or 'http://' not in option:
-                os.system("a2sv -t {} -p 80".format(option))
-                return menu()
+                port = 443
+            os.system("a2sv -t %s -p %s"%(port))
         else:
-            print("/ {}Errore{}: {}A2SV{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sA2SV%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'recon-ng':
         os.system("gnome-terminal -- recon-ng")
         return menu()
     elif command == 'sslscan':
         if option:
+            port = 80
             if 'https://' in option:
-                os.system("sslscan {}:443".format(option))
-                print("")
-                return menu()
-            if 'http://' in option or 'http://' not in option:
-                os.system("sslscan {}:80".format(option))
-                print("")
-                return menu()
+                port = 443
+            print("")
+            os.system("sslscan %s:%s"%(option, port))
+            print("")
         else:
-            print("/ {}Errore{}: {}Sslscan{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sSslscan%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'xsstracer':
         if option:
+            port = 80
             if 'https://' in option:
-                os.system("cd Tools/XSSTracer/ && python xsstracer.py {} 443".format(option))
-                return menu()
-            elif 'http://' in option or 'http://' not in option:
-                os.system("cd Tools/XSSTracer/ && python xsstracer.py {} 80".format(option))
-                return menu()
+                port = 443
+            os.system("cd Tools/XSSTracer/ && python xsstracer.py %s %s"%(option, port))
         else:
-            print("/ {}Errore{}: {}XSSTracer{} richiede un indirizzo.".format(red, end, blue, end))
-            return menu()
+            print("// %sErrore%s: %sXSSTracer%s richiede un indirizzo."%(red, end, blue, end))
+        return menu()
     elif command == 'crips':
         os.system("gnome-terminal -- crips")
         return menu()
     elif command == 'vbscan':
         if option:
-            if 'https://' in option:
-                os.system("cd Tools/vbscan/ && perl vbscan.pl {}".format(option))
-                return menu()
-            if 'http://' in option:
-                os.system("cd Tools/vbscan/ && perl vbscan.pl {}".format(option))
-                return menu()
-            elif 'http://' not in option:
-                os.system("cd Tools/vbscan/ && perl vbscan.pl http://{}".format(option))
-                return menu()
+            target = option
+            if 'http://' not in option:
+                target = "http://" + option
+            elif 'http://' in option or 'https://' in option:
+                pass
+            os.system("cd Tools/vbscan/ && perl vbscan.pl %s"%(target))
         else:
-            print("/ {}Errore{}: {}Vbscan{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sVbscan%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'whatweb':
         if option:
-            os.system("whatweb -v -a 3 {}".format(option))
+            os.system("whatweb -v -a 3 %s"%(option))
         else:
-            print("/ {}Errore{}: {}WhatWeb{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sWhatWeb%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'siege':
         if option:
-            os.system("siege -g {}".format(option))
+            os.system("siege -g %s"%(option))
         else:
-            print("/ {}Errore{}: {}Siege{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sSiege%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'urlextractor':
         if option:
-            os.system("cd Tools/URLextractor/ && ./extractor.sh {}".format(option))
+            os.system("cd Tools/URLextractor/ && ./extractor.sh %s"%(option))
             print("")
         else:
-            print("/ {}Errore{}: {}URLextractor{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sURLextractor%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'instarecon':
         if option:
@@ -1354,46 +1302,43 @@ def menu():
             if "www." in option or "www." in target:
                 target = option.split("www.")
                 target = target[1]
-            os.system("instarecon.py {}".format(target))
+            os.system("instarecon.py %s"%(target))
             print("")
-            return menu()
         else:
-            print("/ {}Errore{}: {}InstaRecon{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sInstaRecon%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'onioff':
         if option:
             if '.onion' not in option:
-                print("/ {}Errore{}: {}Onioff{} richiede un indirizzo Tor valido.".format(red,end, blue,end))
+                print("// %sErrore%s: %sOnioff%s richiede un indirizzo Tor valido."%(red,end, blue,end))
                 return menu()
-            sys.stdout.write("/ Avvio Tor")
+            sys.stdout.write("// Avvio Tor")
             sys.stdout.flush()
             os.system("service tor start")
-            sys.stdout.write("  [ {}DONE{} ]\n".format(bright_green,end))
+            sys.stdout.write("  [ %sDONE%s ]\n"%(bright_green,end))
             sys.stdout.flush()
-            os.system("cd Tools/onioff/ && python onioff.py {}")
-            sys.stdout.write("\n{}/ Fermo Tor".format(end))
+            os.system("cd Tools/onioff/ && python onioff.py %s"%(option))
+            sys.stdout.write("\n%s// Fermo Tor"%(end))
             sys.stdout.flush()
             os.system("service tor stop")
-            sys.stdout.write("  [ {}DONE{} ]\n".format(bright_green,end))
+            sys.stdout.write("  [ %sDONE%s ]\n"%(bright_green,end))
             sys.stdout.flush()
-            return menu()
         else:
-            print("/ {}Errore{}: {}Onioff{} richiede un indirizzo Tor.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sOnioff%s richiede un indirizzo Tor."%(red,end, blue,end))
+        return menu()
     elif command == 'dsxs':
         if option:
             print("")
-            os.system("cd Tools/DSXS/ && python dsxs.py -u {}".format(option))
+            os.system("cd Tools/DSXS/ && python dsxs.py -u %s"%(option))
             print("")
-            return menu()
         else:
-            print("/ {}Errore{}: {}Dsxs{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sDsxs%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'joomscan':
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi Joomscan{}:".format(bright_green,end))
+                print("// %sComandi Joomscan%s:"%(bright_green,end))
                 print(" Come usarlo:  $ joomscan <target> [options]")
                 print("")
                 print(" -nf  : No Firewall   - Nessun rilevamento del Firewall")
@@ -1406,67 +1351,70 @@ def menu():
                 if argument2:
                     if argument3:
                         if argument4:
-                            os.system("joomscan -u {} -sp {} {} {} {}".format(option, argument, argument2, argument3, argument4))
+                            os.system("joomscan -u %s -sp %s %s %s %s"%(option, argument, argument2, argument3, argument4))
                             return menu()
-                        os.system("joomscan -u {} -sp {} {} {}".format(option, argument, argument2, argument3))
+                        os.system("joomscan -u %s -sp %s %s %s"%(option, argument, argument2, argument3))
                         return menu()
-                    os.system("joomscan -u {} -sp {} {}".format(option, argument, argument2))
+                    os.system("joomscan -u %s -sp %s %s"%(option, argument, argument2))
                     return menu()
                 elif argument == '-nf' or argument == '-vu' or argument == '-nvf' or argument == '-nv':
-                    os.system("joomscan -u {} -sp {}".format(option,argument))
+                    os.system("joomscan -u %s -sp %s"%(option,argument))
                     return menu()
                 else:
-                    print("/ {}Errore{}: {}Joomscan{} richiede un opzione valida.".format(red,end, blue,end))
+                    print("// %sErrore%s: %sJoomscan%s richiede un opzione valida."%(red,end, blue,end))
                     return menu()
-            os.system("joomscan -u {} -sp".format(option))
+            os.system("joomscan -u %s -sp"%(option))
             return menu()
         else:
-            print("/ {}Errore{}: {}Joomscan{} richiede un indirizzo. Digita {}joomscan -h{} per ulteriori comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sJoomscan%s richiede un indirizzo - %sjoomscan -h%s per ulteriori comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'amap':
         if option:
             try:
                 if int(argument):
                     print("")
-                    os.system("amap {} {} -A -bvq -1".format(option,argument))
+                    os.system("amap %s %s -A -bvq -1"%(option,argument))
                     print("")
                     return menu()
             except TypeError:
-                print("/ {}Errore{}: {}Amap{} richiede una porta.".format(red,end, blue,end))
+                print("// %sErrore%s: %sAmap%s richiede una porta."%(red,end, blue,end))
                 return menu()
             except ValueError:
-                print("/ {}Errore{}: Porta non valida.".format(red,end))
+                print("// %sErrore%s: Porta non valida."%(red,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}Amap{} richiede un indirizzo e una porta.".format(red,end, blue,end))
+            print("// %sErrore%s: %sAmap%s richiede un indirizzo e una porta."%(red,end, blue,end))
             return menu()
     elif command == 'automater':
         if option:
-            print("/ Solo un momento...")
-            os.system("automater {} -v".format(option))
+            print("// Solo un momento...")
+            os.system("automater %s -v"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}Automater{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sAutomater%s richiede un indirizzo."%(red,end, blue,end))
             return menu()
     elif command == 'ip2host':
         if option:
-            if '.' not in option:
-                print("/ {}Errore{}: Indirizzo IP non valido.".format(red,end))
-                return menu()
+            checkwords = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n",
+            "o","p","q","r","s","t","u","v","w","x","y","z"]
+            for words in option:
+                if words in checkwords or "." not in option or len(option) < 7:
+                    print("// %sErrore%s: Indirizzo IP non valido."%(red,end))
+                    return menu()
             try:
                 socket.inet_aton(option)
             except (socket.error, UnboundLocalError):
-                print("/ {}Errore{}: Indirizzo IP non valido.".format(red,end))
+                print("// %sErrore%s: Indirizzo IP non valido."%(red,end))
                 return menu()
             hostname = socket.getfqdn(option)
             if hostname == option:
-                print("/ {}Attenzione{}: Nessun Hostname assegnato per: {}".format(bright_yellow,end, blue + hostname + end))
+                print("// %sAttenzione%s: Nessun Hostname assegnato per: %s"%(bright_yellow,end, blue + hostname + end))
                 return menu()
-            print '/ Hostname: ' + blue + hostname + end
+            print '// Hostname: ' + blue + hostname + end
             return menu()
         else:
-            print("/ {}Errore{}: {}IP2Host{} richiede un indirizzo IP.".format(red,end, blue,end))
+            print("// %sErrore%s: %sIP2Host%s richiede un indirizzo IP."%(red,end, blue,end))
             return menu()
 
     # BruteForce
@@ -1476,19 +1424,19 @@ def menu():
                 if argument2:
                     if argument3:
                         if os.path.exists(argument3) == False:
-                            print("/ {}Errore{}: Directory o File non trovati.".format(red,end))
+                            print("// %sErrore%s: Directory o File non trovati."%(red,end))
                             return menu()
                         print("")
-                        os.system("hydra -l {} -P {} ftp://ftp.{}".format(argument2, argument3, argument))
+                        os.system("hydra -l %s -P %s ftp://ftp.%s"%(argument2, argument3, argument))
                         os.system("xterm -e 'mv hydra.restore Oth/'")
                     else:
-                        print("/ {}Errore{}: {}Hydra Ftp{} richiede una wordlist.".format(red,end, blue,end))
+                        print("// %sErrore%s: %sHydra Ftp%s richiede una wordlist."%(red,end, blue,end))
                 else:
-                    print("/ {}Errore{}: {}Hydra Ftp{} richiede utente e wordlist.".format(red,end, blue,end))
+                    print("// %sErrore%s: %sHydra Ftp%s richiede utente e wordlist."%(red,end, blue,end))
             else:
-                print("/ {}Errore{}: {}Hydra Ftp{} richiede indirizzo, utente e wordlist.".format(red,end, blue,end))
+                print("// %sErrore%s: %sHydra Ftp%s richiede indirizzo, utente e wordlist."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: {}Hydra Ftp{} richiede opzione, indirizzo, utente e wordlist.".format(red,end, blue,end))
+            print("// %sErrore%s: %sHydra Ftp%s richiede opzione, indirizzo, utente e wordlist."%(red,end, blue,end))
         return menu()
     elif command == 'xhydra':
         os.system("gnome-terminal -- xhydra")
@@ -1523,9 +1471,9 @@ def menu():
         return menu()
     elif command == 'wifiphisher':
         if option:
-            os.system("wifiphisher -nJ -e '{}' -T firmware-upgrade".format(option))
+            os.system("wifiphisher -nJ -e '%s' -T firmware-upgrade"%(option))
         else:
-            print("/ {}Errore{}: {}Wifiphisher{} richiede un nome per creare un Fake Access Point.".format(red,end, blue,end))
+            print("// %sErrore%s: %sWifiphisher%s richiede un nome per creare un Fake Access Point."%(red,end, blue,end))
         return menu()
     elif command == 'wifite':
         os.system("gnome-terminal -- wifite")
@@ -1554,7 +1502,7 @@ def menu():
     # MitM
     elif command == 'bettercap':
         os.system("gnome-terminal -- bettercap -X -L -S ARP --proxy --proxy-https --httpd -O Logs/bettercap-saves.txt")
-        print("/ Logs alla chiusura di Bettercap in {}Logs/bettercap-saves.txt{}".format(blue,end))
+        print("// Logs alla chiusura di Bettercap in %sLogs/bettercap-saves.txt%s"%(blue,end))
         return menu()
     elif command == 'morpheus':
         os.system("reset")
@@ -1567,20 +1515,23 @@ def menu():
         os.system("gnome-terminal -- ettercap -G")
         return menu()
     elif command == 'mitmf':
-        os.system("gnome-terminal -- mitmf -i {} --spoof --arp --dns --hsts --gateway {}".format(netifaces.gateways()['default'][netifaces.AF_INET][1], str(get_gateway())))
+        os.system("gnome-terminal -- mitmf -i %s --spoof --arp --dns --hsts --gateway %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1], str(get_gateway())))
         return menu()
     elif command == 'mitmap':
         os.system("cd Tools/mitmAP/ && python3 mitmAP.py")
-        print("/ {}Attenzione{}: Attendi per la riconnessione alla rete.".format(bright_yellow,end))
-        time.sleep(3)
+        print("\n// %sAttenzione%s: Attendi per la riconnessione alla rete.\n"%(bright_yellow,end))
+        try:
+            time.sleep(3)
+        except (KeyboardInterrupt,EOFError):
+            pass
         logo_menu()
     elif command == 'cdpsnarf':
-        print("/ Il pacchetto CDP e' generalmente usato da sistemi cisco per comunicare tra loro e coi")
-        print("  dispositivi connessi. Esso puo' contenere informazioni sensibili sui dispositivi.")
-        print("/ {}Attenzione{}: L'output di {}CDPSnarf{} verra' salvato nella cartella {}Logs{}.".format(bright_yellow,end, blue,end, blue,end))
+        print("// Il pacchetto CDP e' generalmente usato da sistemi cisco per comunicare tra loro e coi")
+        print("   dispositivi connessi. Esso puo' contenere informazioni sensibili sui dispositivi.")
+        print("// %sAttenzione%s: L'output di %sCDPSnarf%s verra' salvato nella cartella %sLogs%s."%(bright_yellow,end, blue,end, blue,end))
         print("")
         time.sleep(3)
-        os.system("cdpsnarf -i {} -w Logs/CDPSnarf.pcap".format(netifaces.gateways()['default'][netifaces.AF_INET][1]))
+        os.system("cdpsnarf -i %s -w Logs/CDPSnarf.pcap"%(netifaces.gateways()['default'][netifaces.AF_INET][1]))
         print("")
         return menu()
     elif command == 'cookie-cadger':
@@ -1588,99 +1539,60 @@ def menu():
         return menu()
     elif command == 'ciscotorch':
         if option:
+            modules = ["-h","all","ssh","snmp","telnet","ntp","tfpt","ssl","webserver","ios_http"]
             if option == '-h':
                 print("")
-                print("/ {}Comandi CiscoTorch{}:".format(bright_green,end))
+                print("// %sComandi CiscoTorch%s:"%(bright_green,end))
                 print(" Come Usarlo: $ ciscotorch <module> <scan_target>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ all / ssh / snmp / telnet / ntp / tfpt / ssl / webserver / ios_http ]")
                 print("")
                 return menu()
+            module = None
             if option == 'all':
-                if argument:
-                    os.system("cisco-torch -A {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-A"
             elif option == 'ssh':
-                if argument:
-                    os.system("cisco-torch -s {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-s"
             elif option == 'snmp':
-                if argument:
-                    os.system("cisco-torch -u {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-u"
             elif option == 'telnet':
-                if argument:
-                    os.system("cisco-torch -t {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-t"
             elif option == 'ntp':
-                if argument:
-                    os.system("cisco-torch -n {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-n"
             elif option == 'tftp':
-                if argument:
-                    os.system("cisco-torch -j {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-j"
             elif option == 'ssl':
-                if argument:
-                    os.system("cisco-torch -c {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-c"
             elif option == 'webserver':
-                if argument:
-                    os.system("cisco-torch -w {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
+                module = "-w"
             elif option == 'ios_http':
-                if argument:
-                    os.system("cisco-torch -z {}".format(argument))
-                    return menu()
-                else:
-                    print("/ {}Errore{}: {}CiscoTorch{} richiede un indirizzo.".format(red,end, blue,end))
-                    return menu()
-            else:
-                print("/ {}Errore{}: {}CiscoTorch{} richiede un modulo valido e un indirizzo.".format(red,end, blue,end))
+                module = "-z"
+            elif option not in modules:
+                print("// %sErrore%s: Modulo non valido."%(red,end, blue,end))
                 return menu()
+            if argument == None:
+                print("// %sErrore%s: %sCiscoTorch%s richiede un indirizzo."%(red,end, blue,end))
+                return menu()
+            os.system("cisco-torch %s %s"%(module, argument))
+            print("")
         else:
-            print("/ {}Errore{}: {}CiscoTorch{} richiede un modulo valido e un indirizzo. Digita {}ciscotorch -h{} per".format(red,end, blue,end, blue,end))
-            print("          ulteriori comandi.")
-            return menu()
+            print("// %sErrore%s: %sCiscoTorch%s richiede un modulo e un indirizzo - %sciscotorch -h%s per i comandi."%(red,end, blue,end, blue,end))
+        return menu()
     elif command == 'p0f':
         os.system("gnome-terminal -- p0f -p")
         return menu()
     elif command == 'snmpcheck':
         if option:
-            os.system("snmp-check {}".format(option))
+            os.system("snmp-check %s"%(option))
             print("")
             return menu()
         else:
-            print("/ Snmp-Check funziona solo se il bersaglio ha la porta 161 aperta.")
-            print("/ {}Errore{}: {}Snmp-Check{} richiede un indirizzo IP locale.".format(red,end, blue,end))
+            print("// Snmp-Check funziona solo se il bersaglio ha la porta 161 aperta.")
+            print("// %sErrore%s: %sSnmp-Check%s richiede un indirizzo IP locale."%(red,end, blue,end))
             return menu()
     elif command == 'sslstrip':
-        print("/ Logs al termine in {}Logs/sslstrip.txt{}".format(blue,end))
+        print("// Logs al termine in %sLogs/sslstrip.txt%s"%(blue,end))
         print("")
         os.system("sslstrip --all -w Logs/sslstrip.txt -l 8080")
         print("")
@@ -1690,16 +1602,16 @@ def menu():
         return menu()
     elif command == 'dhcpig':
         print("")
-        os.system("cd Tools/DHCPig/ && python pig.py -a -i -l -g -r -n -c {}".format(netifaces.gateways()['default'][netifaces.AF_INET][1]))
+        os.system("cd Tools/DHCPig/ && python pig.py -a -i -l -g -r -n -c %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1]))
         print("")
         return menu()
     elif command == "voiphopper":
         if option:
-            os.system("voiphopper -i {} -c 0".format(option))
+            os.system("voiphopper -i %s -c 0"%(option))
             print("")
             return menu()
         else:
-            print("/ {}Errore{}: {}VoipHopper{} richiede un interfaccia di rete.".format(red,end, blue,end))
+            print("// %sErrore%s: %sVoipHopper%s richiede un interfaccia di rete."%(red,end, blue,end))
             return menu()
 
     # Exploiting
@@ -1765,9 +1677,9 @@ def menu():
         logo_menu()
     elif command == 'jexboss':
         if option:
-            os.system("cd Tools/jexboss/ && python jexboss.py -u {}".format(option))
+            os.system("cd Tools/jexboss/ && python jexboss.py -u %s"%(option))
         else:
-            print("/ {}Errore{}: {}Jexboss{} richiede un indirizzo.".format(red,end, blue,end))
+            print("// %sErrore%s: %sJexboss%s richiede un indirizzo."%(red,end, blue,end))
         return menu()
     elif command == 'weeman':
         os.system("reset")
@@ -1798,18 +1710,18 @@ def menu():
     elif command == 'ciscoge':
         if option:
             if argument:
-                os.system("cd Tools/cisco-global-exploiter/ && perl cge.pl {} {}".format(option,argument))
+                os.system("cd Tools/cisco-global-exploiter/ && perl cge.pl %s %s"%(option,argument))
                 return menu()
             else:
                 os.system("cd Tools/cisco-global-exploiter/ && perl cge.pl")
-                print("\n/ {}Errore{}: {}Ciscoge{} richiede un metodo d'attacco (1-14).".format(red,end, blue,end))
+                print("\n// %sErrore%s: %sCiscoge%s richiede un metodo d'attacco (1-14)."%(red,end, blue,end))
                 return menu()
         else:
             os.system("cd Tools/cisco-global-exploiter/ && perl cge.pl")
-            print("\n/ {}Errore{}: {}Ciscoge{} richiede un bersaglio locale ed un metodo d'attacco (1-14).".format(red,end, blue,end))
+            print("\n// %sErrore%s: %sCiscoge%s richiede un bersaglio locale ed un metodo d'attacco (1-14)."%(red,end, blue,end))
             return menu()
     elif command == 'yersinia':
-        print("/ Premi {}q{} per chiudere la finestra di yersinia.".format(blue,end))
+        print("// Premi %sq%s per chiudere la finestra di yersinia."%(blue,end))
         os.system("gnome-terminal --geometry=80x25 -- yersinia -I")
         os.system("xterm -e 'rm yersinia.log'")
         return menu()
@@ -1817,17 +1729,17 @@ def menu():
         if option:
             if option == '-h':
                 print("")
-                print("/ WOL-E: Wake on Lan Explorer")
+                print("// WOL-E: Wake on Lan Explorer")
                 print("")
-                print("/ {}Comandi WOL-E{}:".format(bright_green,end))
+                print("// %sComandi WOL-E%s:"%(bright_green,end))
                 print(" Come usarlo: $ wole <module>")
                 print("")
-                print("/ {}Moduli{}:".format(bright_green,end))
+                print("// %sModuli%s:"%(bright_green,end))
                 print(" [ sniff / detect_apple_mac / wakeup ]")
                 print("")
                 return menu()
             if option == 'sniff':
-                os.system("gnome-terminal -- wol-e -s -i {}".format(netifaces.gateways()['default'][netifaces.AF_INET][1]))
+                os.system("gnome-terminal -- wol-e -s -i %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1]))
                 return menu()
             elif option == 'wakeup':
                 os.system("wol-e -fa")
@@ -1836,13 +1748,13 @@ def menu():
                 os.system("wol-e -f")
                 return menu()
             else:
-                print("/ {}Errore{}: {}WOL-E{} richiede un modulo valido.".format(red,end, blue,end))
+                print("// %sErrore%s: Modulo non valido."%(red,end))
                 return menu()
         else:
-            print("/ {}Errore{}: {}WOL-E{} richiede un modulo valido. Digita {}wole -h{} per i comandi.".format(red,end, blue,end, blue,end))
+            print("// %sErrore%s: %sWOL-E%s richiede un modulo - %swole -h%s per i comandi."%(red,end, blue,end, blue,end))
             return menu()
     elif command == 'responder':
-        os.system("responder -wrfdbv -P -I {}".format(netifaces.gateways()['default'][netifaces.AF_INET][1]))
+        os.system("responder -wrfdbv -P -I %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1]))
         print("")
         return menu()
     elif command == 'xspy':
@@ -1889,163 +1801,160 @@ def menu():
         return menu()
     elif command == 'httrack':
         if option:
-            os.system("gnome-terminal -- httrack {} -O Logs/httrack/{}/".format(option, option))
-            print("/ {}Attenzione{}: Dati salvati nella cartella del Tool in {}Logs/httrack/{}/{}".format(bright_yellow,end,blue,option,end))
-            return menu()
+            os.system("gnome-terminal -- httrack %s -O Logs/httrack/%s/"%(option, option))
+            print("// %sAttenzione%s: Dati salvati nella cartella del Tool in %sLogs/httrack/%s/%s"%(bright_yellow,end,blue,option,end))
         else:
-            print("/ {}Errore{}: {}Httrack{} richiede un indirizzo.".format(red,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sHttrack%s richiede un indirizzo."%(red,end, blue,end))
+        return menu()
     elif command == 'metagoofil':
         file_types = ["pdf","doc","xls","ppt","odp","ods","docx","xlsx","pptx"]
         if option:
             if option == '-h':
                 print("")
-                print("/ {}Comandi Metagoofil{}:".format(bright_green,end))
+                print("// %sComandi Metagoofil%s:"%(bright_green,end))
                 print(" Come usarlo: $ metagoofil <domain (example.com)> <filetype to download>")
                 print("")
-                print("/ {}FileType{}:".format(bright_green,end))
+                print("// %sFileType%s:"%(bright_green,end))
                 print(" [ pdf / doc / xls / ppt / odp / ods / docx / xlsx / pptx ]")
                 print("")
-                print("/ {}Attenzione{}:".format(bright_yellow,end))
+                print("// %sAttenzione%s:"%(bright_yellow,end))
                 print(" Per scaricare molteplici file digita i 'FileTypes' nel seguente modo:")
-                print(" {}pdf,doc,xls,...{}".format(blue,end))
+                print(" %spdf,doc,xls,...%s"%(blue,end))
                 print("")
                 return menu()
             elif option:
                 if argument:
                     if argument not in file_types:
-                        print("/ {}Errore{}: Formato non valido.".format(red,end))
+                        print("// %sErrore%s: Formato non valido."%(red,end))
                         return menu()
-                    os.system("metagoofil -d {} -t {} -o Logs/MetaGF/ -f metagf.html")
-                    print("/ File salvati in {}Logs/MetaGF/metagf.html{} (se scaricati).".format(blue,end))
-                    return menu()
+                    os.system("metagoofil -d %s -t %s -o Logs/MetaGF/ -f metagf.html")
+                    print("// File salvati in %sLogs/MetaGF/metagf.html%s (se scaricati)."%(blue,end))
                 else:
-                    print("/ {}Errore{}: {}Metagoofil{} richiede un tipo di file da scaricare.".format(red,end, blue,end))
-                    return menu()
+                    print("// %sErrore%s: %sMetagoofil%s richiede un tipo di file da scaricare."%(red,end, blue,end))
             else:
-                print("/ {}Errore{}: {}Metagoofil{} richiede un indirizzo e un tipo di file da scaricare.".format(red,end, blue,end))
-                return menu()
+                print("// %sErrore%s: %sMetagoofil%s richiede un indirizzo e un tipo di file da scaricare."%(red,end, blue,end))
         else:
-            print("/ {}Errore{}: {}Metagoofil{} richiede una serie di argomenti. Digita {}metagoofil -h{} per i comandi.".format(red,end, blue,end, blue,end))
-            return menu()
+            print("// %sErrore%s: %sMetagoofil%s richiede una serie di argomenti. Digita %smetagoofil -h%s per i comandi."%(red,end, blue,end, blue,end))
+        return menu()
 
     # WAN
     elif command == 'ngrok':
         ngrok_srvc_list = ["tcp","http","tsl"]
         if option in ngrok_srvc_list:
-            if int(argument) < 1 or int(argument) > 65535:
-                print("/ {}Errore{}: {}Ngrok{} richiede una porta valida. Cosa cazzo stai facendo?".format(red,end, blue,end))
-                return menu()
             try:
-                if int(argument):
-                    os.system("gnome-terminal -- ngrok {} {}".format(option, argument))
-            except TypeError:
-                print("/ {}Errore{}: {}Ngrok{} richiede una porta.".format(red,end, blue,end))
+                if int(argument) < 1 or int(argument) > 65535:
+                    print("// %sErrore%s: Porta non valida."%(red,end))
+                    return menu()
             except ValueError:
-                print("/ {}Errore{}: {}Ngrok{} richiede una porta, non qualche tua stronzata!".format(red,end, blue,end))
+                print("// %sErrore%s: Porta non valida."%(red,end))
+                return menu()
+            except TypeError:
+                print("// %sErrore%s: %sNgrok%s richiede una Porta."%(red,end, blue,end))
+                return menu()
+            os.system("gnome-terminal -- ngrok %s %s"%(option, argument))
         else:
-            print("/ {}Errore{}: {}Ngrok{} richiede un servizio valido e una porta da avviare come tunnel.".format(red,end, blue,end))
+            print("// %sErrore%s: %sNgrok%s richiede un servizio valido e una porta da avviare come tunnel."%(red,end, blue,end))
         return menu()
 
-    #
+    # else input
     else:
-        print("/ {}Errore{}: Comando non valido - {}help{} per i comandi.".format(red,end, blue,end))
+        print("// %sErrore%s: Comando non valido - %shelp%s per i comandi."%(red,end, blue,end))
         return menu()
 
 def help():
     print("")
-    print("{}Comandi{}:                                                                               ".format(bright_green + underline, end)) ; sleep(.01)
-    print("$ help   - info     - banner       - reload - net_restart - mapscii - updatedb - restart   ") ; sleep(.01)
-    print("$ reboot - shutdown - ifconfig [*] - os *   - ftp         - ping *  - kill     - quit/exit ") ; sleep(.01)
+    print("%sComandi%s:                                                                               "%(bright_green + underline, end)) ; sleep(.01)
+    print("$ help   - info - reload  - net_restart  - mapscii  - ftp  - ping *                        ") ; sleep(.01)
+    print("$ banner - kill - restart - ifconfig [*] - updatedb - os * - quit/exit                     ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Spoofing{}:                                                                              ".format(bright_green + underline, end)) ; sleep(.01)
+    print("%sSpoofing%s:                                                                              "%(bright_green + underline, end)) ; sleep(.01)
     print("$ torghot [stop/start] - macchanger                                                        ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Password Attacks{}:                                                                      ".format(bright_green + underline, end)) ; sleep(.01)
+    print("%sPassword Attacks%s:                                                                      "%(bright_green + underline, end)) ; sleep(.01)
     print("$ androidpincrack * - extract-hash * - ioscrack * - findmyhash * - hash-identifier         ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Sniffing{}:                                                                              ".format(bright_green + underline, end)) ; sleep(.01)
-    print("$ bettercap - ettercap - morpheus     - wireshark     - mitmf  - cdpsnarf                  ") ; sleep(.01)
-    print("$ sslstrip  - bluelog  - voiphopper * - cookie-cadger - mitmap - p0f                       ") ; sleep(.01)
+    print("%sSniffing%s:                                                                              "%(bright_green + underline, end)) ; sleep(.01)
+    print("$ bettercap - ettercap - morpheus - mitmf  - voiphopper *  - bluelog                       ") ; sleep(.01)
+    print("$ wireshark - cdpsnarf - sslstrip - mitmap - cookie-cadger - p0f                           ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Scanning{}:                                                                              ".format(bright_green + underline, end)) ; sleep(.01)
-    print("-{}Local{}:                                                                                ".format(bright_green, end))
+    print("%sScanning%s:                                                                              "%(bright_green + underline, end)) ; sleep(.01)
+    print("-%sLocal%s:                                                                                "%(bright_green, end))
     print("$ nmap * - netdiscover - ciscotorch * - snmpcheck * - dhcpig                               ") ; sleep(.01)
-    print("-{}Web{}:                                                                                  ".format(bright_green, end)) ; sleep(.01)
-    print("--{}Hidden Directories&Files Detection{}:                                                  ".format(bright_green, end)) ; sleep(.01)
+    print("-%sWeb%s:                                                                                  "%(bright_green, end)) ; sleep(.01)
+    print("--%sHidden Directories&Files Detection%s:                                                  "%(bright_green, end)) ; sleep(.01)
     print("$ cpscan * - breacher * - dotdotpwn * - parsero * - angryfuzzer * - dirb * - dirbuster     ") ; sleep(.01)
-    print("--{}Scanners{} ({}Vulnerability + Gathering + Others{}):                                   ".format(bright_green, end, bright_green,end)) ; sleep(.01)
-    print("$ wpscan *   - uniscan * - droopescan  - xsssniper *     - vbscan *       - dracnmap       ") ; sleep(.01)
-    print("$ joomscan * - sslscan * - onioff *    - xsstracer       - arachni *      - sshscan *      ") ; sleep(.01)
-    print("$ zenmap     - crips     - siege *     - whatweb *       - urlextractor * - dtect          ") ; sleep(.01)
-    print("$ bingoo     - recon-ng  - automater * - sn1per *        - red_hawk       - maltego        ") ; sleep(.01)
-    print("$ dmitry *   - amap *    - ktfconsole  - webscarab       - theharvester * - fimap *        ") ; sleep(.01)
-    print("$ hping3     - sslyze *  - nikto *     - blindelephant * - cutycapt *     - jaidam         ") ; sleep(.01)
-    print("$ zaproxy    - a2sv *    - dsxs *      - striker         - xattacker      - instarecon *   ") ; sleep(.01)
-    print("$ inspy *    - ip2host * - vega        - operativef      - uatester *     - cewl *         ") ; sleep(.01)
-    print("--{}Enumerators{}:                                                                         ".format(bright_green, end)) ; sleep(.01)
+    print("--%sScanners%s (%sVulnerability + Gathering + Others%s):                                   "%(bright_green, end, bright_green,end)) ; sleep(.01)
+    print("$ theharvester *  - uniscan *  - wpscan *  - vbscan * - dtect   - siege *                  ") ; sleep(.01)
+    print("$ blindelephant * - joomscan * - sslscan * - onioff * - fimap * - jaidam                   ") ; sleep(.01)
+    print("$ urlextractor *  - droopescan - whatweb * - sn1per * - zenmap  - crips                    ") ; sleep(.01)
+    print("$ instarecon *    - operativef - xattacker - sslyze * - bingoo  - striker                  ") ; sleep(.01)
+    print("$ xsssniper *     - uatester * - dmitry *  - dracnmap - amap *  - inspy *                  ") ; sleep(.01)
+    print("$ automater *     - webscarab  - recon-ng  - red_hawk - hping3  - zaproxy                  ") ; sleep(.01)
+    print("$ cutycapt *      - xsstracer  - arachni * - nikto *  - a2sv *  - dsxs *                   ") ; sleep(.01)
+    print("$ ktfconsole      - ip2host *  - sshscan * - maltego  - vega    - cewl *                   ") ; sleep(.01)
+    print("--%sEnumerators%s:                                                                         "%(bright_green, end)) ; sleep(.01)
     print("$ sublist3r * - dnsenum * - dnsmap * - smtpuserenum *                                      ") ; sleep(.01)
-    print("--{}All-in-one{}:                                                                          ".format(bright_green, end)) ; sleep(.01)
+    print("--%sAll-in-one%s:                                                                          "%(bright_green, end)) ; sleep(.01)
     print("$ sechub - tulpar * - pentmenu                                                             ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Gathering{}:                                                                             ".format(bright_green + underline, end)) ; sleep(.01)
-    print("-{}Geolocation{}:                                                                          ".format(bright_green, end)) ; sleep(.01)
+    print("%sGathering%s:                                                                             "%(bright_green + underline, end)) ; sleep(.01)
+    print("-%sGeolocation%s:                                                                          "%(bright_green, end)) ; sleep(.01)
     print("$ geoip * - whois *                                                                        ") ; sleep(.01)
-    print("-{}Credentials Verification{}:                                                             ".format(bright_green, end)) ; sleep(.01)
+    print("-%sCredentials Verification%s:                                                             "%(bright_green, end)) ; sleep(.01)
     print("$ credmap * - knockmail                                                                    ") ; sleep(.01)
-    print("-{}Others{}:                                                                               ".format(bright_green, end)) ; sleep(.01)
+    print("-%sOthers%s:                                                                               "%(bright_green, end)) ; sleep(.01)
     print("$ infoga *                                                                                 ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Networking{}:                                                                            ".format(bright_green + underline, end)) ; sleep(.01)
-    print("-{}WiFi Attacks{}:                                                                         ".format(bright_green, end)) ; sleep(.01)
-    print("$ airgeddon - wpsbreaker    - fluxion  - netattack                                         ") ; sleep(.01)
-    print("$ wifite    - wifiphisher * - fakeauth - wifijammer                                        ") ; sleep(.01)
-    print("-{}Exploitation{} ({}Local + Non-Local{}):                                                 ".format(bright_green,end, bright_green,end)) ; sleep(.01)
-    print("$ routersploit - eggshell - armitage - jexboss * - setoolkit  - msfconsole - kayak         ") ; sleep(.01)
-    print("$ shellsploit  - l0l      - wirespy  - pentestly - termineter - weeman     - wole *        ") ; sleep(.01)
-    print("$ printerspam  - yersinia - pybomber - ciscoge * - responder  - koadic                     ") ; sleep(.01)
-    print("-{}Web Exploitation{}:                                                                     ".format(bright_green, end)) ; sleep(.01)
-    print("--{}Stress Testing{}:                                                                      ".format(bright_green, end)) ; sleep(.01)
+    print("%sNetworking%s:                                                                            "%(bright_green + underline, end)) ; sleep(.01)
+    print("-%sWiFi Attacks%s:                                                                         "%(bright_green, end)) ; sleep(.01)
+    print("$ airgeddon - wpsbreaker - fluxion  - wifiphisher *                                        ") ; sleep(.01)
+    print("$ netattack - wifijammer - fakeauth - wifite                                               ") ; sleep(.01)
+    print("-%sExploitation%s (%sLocal + Non-Local%s):                                                 "%(bright_green,end, bright_green,end)) ; sleep(.01)
+    print("$ routersploit - eggshell - armitage - jexboss * - setoolkit  - kayak  - msfconsole        ") ; sleep(.01)
+    print("$ shellsploit  - pybomber - wirespy  - pentestly - termineter - weeman - wole *            ") ; sleep(.01)
+    print("$ printerspam  - yersinia - koadic   - ciscoge * - responder  - l0l                        ") ; sleep(.01)
+    print("-%sWeb Exploitation%s:                                                                     "%(bright_green, end)) ; sleep(.01)
+    print("--%sStress Testing%s:                                                                      "%(bright_green, end)) ; sleep(.01)
     print("$ zambie - xerxes * - ufonet - goldeneye * - torshammer * - t50 * - thcssldos *            ") ; sleep(.01)
-    print("--{}BruteForce{}:                                                                          ".format(bright_green, end)) ; sleep(.01)
-    print("$ blazy - hydra ftp * - xhydra - fbht - brutesploit - cheetah * - medusa *                 ") ; sleep(.01)
-    print("--{}SQLi{}:                                                                                ".format(bright_green, end)) ; sleep(.01)
+    print("--%sBruteForce%s:                                                                          "%(bright_green, end)) ; sleep(.01)
+    print("$ medusa * - brutesploit - blazy - xhydra - hydra ftp * - fbht - cheetah *                 ") ; sleep(.01)
+    print("--%sSQLi%s:                                                                                "%(bright_green, end)) ; sleep(.01)
     print("$ sqlmap * - sqliv [web/dork] * - commix * - jsql - nosqlmap - sqldict                     ") ; sleep(.01)
-    print("--{}Site Cloner + File Donwloader{}:                                                       ".format(bright_green, end)) ; sleep(.01)
+    print("--%sSite Cloner + File Donwloader%s:                                                       "%(bright_green, end)) ; sleep(.01)
     print("$ httrack * - metagoofil *                                                                 ") ; sleep(.01)
-    print("--{}Exploitation{}:                                                                        ".format(bright_green, end)) ; sleep(.01)
+    print("--%sExploitation%s:                                                                        "%(bright_green, end)) ; sleep(.01)
     print("$ ipmipwn * - intrace * - miranda - powerfuzzer - burpsuite                                ") ; sleep(.01)
-    print("--{}Wan{}:                                                                                 ".format(bright_green,end)) ; sleep(.01)
+    print("--%sWan%s:                                                                                 "%(bright_green,end)) ; sleep(.01)
     print("$ ngrok [tcp/http/tsl] [port]                                                              ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}Exploiting{}:                                                                            ".format(bright_green + underline, end)) ; sleep(.01)
-    print("-{}Payload Generator{}:                                                                    ".format(bright_green, end)) ; sleep(.01)
-    print("$ overthruster - arcanus - debinject - u3pwn - fatrat  - zirikatu                          ") ; sleep(.01)
-    print("$ evildroid    - brutal  - kautilya  - chaos - astroid - ezsploit                          ") ; sleep(.01)
-    print("-{}Keylogging{}:                                                                           ".format(bright_green, end)) ; sleep(.01)
+    print("%sExploiting%s:                                                                            "%(bright_green + underline, end)) ; sleep(.01)
+    print("-%sPayload Generator%s:                                                                    "%(bright_green, end)) ; sleep(.01)
+    print("$ debinject - fatrat - ezsploit - arcanus - u3pwn - zirikatu                               ") ; sleep(.01)
+    print("$ evildroid - brutal - kautilya - astroid - chaos - overthruster                           ") ; sleep(.01)
+    print("-%sKeylogging%s:                                                                           "%(bright_green, end)) ; sleep(.01)
     print("$ beelogger - xspy                                                                         ") ; sleep(.01)
-    print("-{}Spyware Generator{}:                                                                    ".format(bright_green, end)) ; sleep(.01)
+    print("-%sSpyware Generator%s:                                                                    "%(bright_green, end)) ; sleep(.01)
     print("$ saint                                                                                    ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("{}All-in-one{}:                                                                            ".format(bright_green + underline, end)) ; sleep(.01)
+    print("%sAll-in-one%s:                                                                            "%(bright_green + underline, end)) ; sleep(.01)
     print("$ hakkuf - sb0x - inguma - penbox - simple-ducky - discover - zarp - atscan - websploit    ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
-    print("/ {}Attenzione{}: L'asterisco (*) indica la richiesta di un argomento. Digita il nome del  ".format(bright_yellow,end)) ; sleep(.01)
-    print("              Tool per ulteriori informazioni su di esso.                                  ") ; sleep(.01)
+    print("// %sAttenzione%s: L'asterisco (*) indica la richiesta di un argomento. Digita il nome del "%(bright_yellow,end)) ; sleep(.01)
+    print("               Tool per ulteriori informazioni su di esso.                                 ") ; sleep(.01)
     print("                                                                                           ") ; sleep(.01)
     return menu()
 ################################################################################
 def startup():
     os.system("rm Logs/verify_first_boot.txt")
     time.sleep(.1)
-    print("/ Welcome to {}fsociety{}!".format(red,end, red,end))
+    print("// Welcome to %sfsociety%s!"%(red,end))
     time.sleep(.3)
-    sys.stdout.write("/ Avvio servizi ")
+    sys.stdout.write("// Avvio servizi ")
     sys.stdout.flush()
     os.system("updatedb")
     os.system("service postgresql start")
     os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
-    sys.stdout.write("[ {}OK{} ]\n\n".format(bright_green,end))
+    sys.stdout.write("[ %sOK%s ]\n\n"%(bright_green,end))
     sys.stdout.flush()
     logo_print()
 def logo_menu():
@@ -2057,8 +1966,8 @@ def logo_menu():
     print('  888888 88   88  dP""db 88  dP     .dP"Y8  dP"Yb   dP""b8 88 888888 888888 Yb  dP        ') ; sleep(.02)
     print('  88__   88   88 dP   `" 88odP      `Ybo." dP   Yb dP   `" 88 88__     88    YbdP         ') ; sleep(.02)
     print('  88""   Y8   8P Yb      88"Yb      o.`Y8b Yb   dP Yb      88 88""     88     8P          ') ; sleep(.02)
-    print('  88     `YbudP   YboodP 88  Yb     8bodP   YbodP   YboodP 88 888888   88    dP  {}'.format(red+versione+end)) ; sleep(.02)
-    print("  [  ~ {}Skull00{} / {}{}{}    ]                                                         ".format(bright_green,end, bright_green,Tools,end)) ; sleep(.02)
+    print('  88     `YbudP   YboodP 88  Yb     8bodP   YbodP   YboodP 88 888888   88    dP  %s'%(red+versione+end)) ; sleep(.02)
+    print("  [  ~ %sSkull00%s / %s%s%s    ]                                                         "%(bright_green,end, bright_green,Tools,end)) ; sleep(.02)
     print("") ; sleep(.1)
     try:
         o = open("Logs/verify_first_boot.txt")
@@ -2067,17 +1976,17 @@ def logo_menu():
         logo_print()
 def logo_print():
     try:
-        print("/ Public IP : {}".format(blue + requests.get('http://ip.42.pl/raw').text + end)) ; sleep(.05)
-        print("/ Local IP  : {}".format(blue +[l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0] + end)) ; sleep(.05)
-        print("/ Interface : {}".format(blue + netifaces.gateways()['default'][netifaces.AF_INET][1] + end)) ; sleep(.05)
+        print("// Public IP : %s"%(blue + requests.get('http://ip.42.pl/raw').text + end)) ; sleep(.05)
+        print("// Local IP  : %s"%(blue +[l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0] + end)) ; sleep(.05)
+        print("// Interface : %s"%(blue + netifaces.gateways()['default'][netifaces.AF_INET][1] + end)) ; sleep(.05)
     except (socket.error,requests.exceptions.ConnectionError,KeyError):
         if socket.error:
-            print("/ Local IP  : " + blue + "-" + end)
+            print("// Local IP  : " + blue + "-" + end)
         if requests.exceptions.ConnectionError:
-            print("/ Public IP : " + blue + "-  " + end + "/ {}Attenzione{}: Disattiva {}TorGhost{} o verifica la tua connessione.".format(bright_yellow,end, blue,end))
+            print("// Public IP : " + blue + "-  " + end + "// %sAttenzione%s: Disattiva %sTorGhost%s o verifica la tua connessione."%(bright_yellow,end, blue,end))
         if KeyError:
-            print("/ Interface : " + blue + "-" + end)
-    print("/ System    : {}".format(blue + platform.linux_distribution()[0] + end)) ; sleep(.05)
+            print("// Interface : " + blue + "-" + end)
+    print("// System    : %s"%(blue + platform.linux_distribution()[0] + end)) ; sleep(.05)
     print("") ; sleep(.05)
     return menu()
 ################################################################################
@@ -2085,10 +1994,10 @@ def exit():
     sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=24, cols=80))
     os.system("clear")
     print("")
-    sys.stdout.write("/ Fermo i servizi ")
+    sys.stdout.write("// Fermo i servizi ")
     sys.stdout.flush()
     os.system("service postgresql stop && echo 0 > /proc/sys/net/ipv4/ip_forward")
-    sys.stdout.write("[ {}OK{} ]\n".format(bright_green,end))
+    sys.stdout.write("[ %sOK%s ]\n"%(bright_green,end))
     sys.stdout.flush()
     print("")
     try:
@@ -2098,22 +2007,22 @@ def exit():
     sys.exit()
 def info():
     print("") ; sleep(.02)
-    print("/ Versione       : {}".format(red + versione + end)) ; sleep(.02)
-    print("/ Autore         : {}Skull00{}".format(bright_green, end)) ; sleep(.02)
-    print("/ Compatibilita' : {}Kali Linux (32/64 bit){}".format(blue,end)) ; sleep(.02)
+    print("// Versione       : %s"%(red + versione + end)) ; sleep(.02)
+    print("// Autore         : %sSkull00%s"%(bright_green, end)) ; sleep(.02)
+    print("// Compatibilita' : %sKali Linux (32/64 bit)%s"%(blue,end)) ; sleep(.02)
     print("") ; sleep(.02)
     return menu()
 ################################################################################
 def firststartup():
     os.system("clear")
     print("""
-/ {}Condizioni{}:
-    Rubare dati, invadere la Privacy di altre persone, e altro ancora sono
-    reati perseguibili penalmente. Con questo, non mi assumo nessuna
-    responsabilita' per l'uso che ne farai di questo programma.
-    {}Hai un cervello, dunque pensa prima di premere invio!{}
+// %sCondizioni%s:
+   Rubare dati, invadere la Privacy di altre persone, e altro ancora sono
+   reati perseguibili penalmente. Con questo, non mi assumo nessuna
+   responsabilita' per l'uso che ne farai di questo programma.
+   %sHai un cervello, dunque pensa prima di premere invio!%s
 
-    """.format(underline+bright_green,end, red,end)) ; sleep(.05)
+    """%(underline+bright_green,end, red,end)) ; sleep(.05)
     try:
         startup_cond = raw_input("// Premi invio per continuare ")
         os.system("echo 'file destinato al macello' > Logs/verify_first_boot.txt") # verifica primo avvio
@@ -2129,7 +2038,4 @@ if __name__ == "__main__":
         installer_done = open("Tools/Complete.txt")
         firststartup()
     except IOError:
-        print("")
-        print("/ {}Attenzione{}: Esegui {}installer.py{} per usare il programma.".format(bright_yellow,end,red, end))
-        print("")
-        sys.exit()
+        sys.exit("\n// %sAttenzione%s: Esegui %sinstaller.py%s per usare il programma.\n"%(bright_yellow,end,red, end))
