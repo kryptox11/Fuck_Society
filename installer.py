@@ -254,7 +254,7 @@ def installer():
 "cd Cr3dOv3r/ && pip3 install -r requirements.txt",
 "cd Devploit/ && chmod +x install && ./install",
 # wifiphisher extra phishing pages
-"cd extra-phishing-pages/ && cp -r * /usr/local/lib/python2.7/dist-packages/wifiphisher-*-py2.7.egg/wifiphisher/data/phishing-pages/ ; sleep 3 ; cd .. ; rm -rf extra-phishing-pages/"
+"cd extra-phishing-pages/ && cp -r * /usr/local/lib/python2.7/dist-packages/wifiphisher-*-py2.7.egg/wifiphisher/data/phishing-pages/ ; sleep 3 ; cd .. ; rm -rf extra-phishing-pages/",
 # inguma
 "tar -xf inguma-*.tar.gz && rm inguma-*.tar.gz 'inguma-0.1.1.tar.gz?r=' wget-log",
 # * chmod
