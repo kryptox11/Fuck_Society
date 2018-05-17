@@ -15,9 +15,7 @@ try:
     underline = '\033[4m'
 except KeyboardInterrupt:
     sys.exit("")
-
 sys.stdout.write("\x1b]2;Fuck Society Installer\x07") # Titolo finestra
-
 euid = os.geteuid()
 if euid != 0:
     print("-# Permessi di root richiesti")
@@ -28,7 +26,6 @@ if euid != 0:
     args = ['sudo', sys.executable] + sys.argv + [os.environ]
     # the next line replaces the currently-running process with the sudo
     os.execlpe('sudo', *args)
-
 def main():
     # verifica se installato anonym8
     try:

@@ -12,7 +12,7 @@ try:
         underline = '\033[4m'
         Tools = red+"214"+end
         Exploits = red+"18"+end
-        versione = red+"v2.0.0"+end
+        versione = red+"v2.0.1"+end
         autore = red+"Skull00"+end
         #
         import os,sys,time,readline,socket,requests,random,hashlib,platform,signal
@@ -85,7 +85,7 @@ def menu():
                 return None
     commands_list = [
     "$","help","banner","search","restart","reload","stop","quit","exit","show",
-    "exploits","tools","ifconfig","net_restart","netinfo","fsopen",
+    "exploits","tools","ifconfig","net_restart","netinfo",
     ]
     tools_list = [
     "nmap","netdiscover","amap","ciscotorch","eggshell","shellsploit","saint","koadic","hakkuf","weeman","arachni","xprobe",
@@ -175,9 +175,6 @@ def menu():
         return menu()
     elif command == 'help' or command == '?':
         help()
-    elif command == "fsopen":
-        os.system("gnome-terminal -- fsociety")
-        return menu()
     elif command == "show" or command == "tools" or command == "exploits":
         if command == "tools": show_tools()
         if command == "exploits": show_exploits()
@@ -554,6 +551,7 @@ def menu():
             print("-# Uso: $ gen2kr <[/full/path/to/inputfile.txt]/testo[,testo,...]> <output.txt>\n")
             return menu()
     elif command == "hashbuster":
+        print("")
         os.system("cd tools/Hash-Buster/ && python hash.py")
         print("")
         return menu()
@@ -566,7 +564,7 @@ def menu():
             if "https://" in command_input:
                 command_input = command_input.replace("https://","")
             if "http://" in command_input:
-                command_input = command_input("http://","")
+                command_input = command_input.replace("http://","")
             print("")
             os.system(command_input)
             print("")
@@ -704,6 +702,7 @@ def menu():
         return menu()
     elif command == 'sn1per':
         if option:
+            print("")
             os.system("cd tools/Sn1per/ && ./sniper -t %s -o -re"%(option))
             print("")
             return menu()
@@ -819,7 +818,7 @@ def menu():
             if "http://" in option:
                 option = option.replace("http://","")
             os.system("intrace -h %s -p %s -s 4"%(option, port))
-            print("")
+            print("\n")
         else:
             print("\n-# Resta in ascolto dei pacchetti trasmessi da un indirizzo")
             print("-# Uso: $ intrace <indirizzo>\n")
@@ -1120,8 +1119,9 @@ def menu():
         return menu()
     elif command == 'wpscan':
         if option:
-            os.system("wpscan %s"%(option))
             print("")
+            os.system("wpscan %s"%(option))
+            print("\n")
             return menu()
         else:
             print("\n-# Wordpress Scanner")
@@ -1190,7 +1190,7 @@ def menu():
         if option:
             print("")
             os.system("nikto -host %s"%(option))
-            print("")
+            print("\n")
             return menu()
         else:
             print("\n-# Cerca versioni, vulnerabilità in XSS, ClickJacking e altro")
@@ -1586,9 +1586,10 @@ def menu():
             return menu()
     elif command == "owscan":
         os.system("cd tools/OWScan/ && php owscan.php")
-        print("")
+        print("\n")
         return menu()
     elif command == "xsstrike":
+        print("")
         os.system("cd tools/XSStrike/ && ./xsstrike")
         print("")
         return menu()
@@ -1706,7 +1707,8 @@ def menu():
         return menu()
     elif command == 'mitmf':
         try:
-            os.system("gnome-terminal -- mitmf -i %s --spoof --arp --dns --hsts --gateway %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1], str(get_gateway())))
+            os.system("mitmf -i %s --spoof --arp --dns --hsts --gateway %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1], str(get_gateway())))
+            print("")
         except KeyError:
             print("-# (%s-%s) Nessuna connessione"%(red,end))
         return menu()
@@ -1751,7 +1753,8 @@ def menu():
             print("-# Uso: $ ciscotorch <indirizzo> <modulo>\n")
         return menu()
     elif command == 'p0f':
-        os.system("gnome-terminal -- p0f -p")
+        os.system("p0f -p -o output/p0f.txt")
+        print("\n-# Output salvato in %soutput/p0f.txt%s\n"%(blue,end))
         return menu()
     elif command == 'snmpcheck':
         if option:
@@ -1779,10 +1782,9 @@ def menu():
             print("-# Uso: $ snmpcheck <indirizzo IP>\n")
         return menu()
     elif command == 'sslstrip':
-        print("-# Salvataggio risultati al termine in %soutput/sslstrip.txt%s"%(blue,end))
-        print("")
+        print("\n-# Salvataggio risultati al termine in %soutput/sslstrip.txt%s\n"%(blue,end))
         os.system("sslstrip --all -w output/sslstrip.txt -l 8080")
-        print("")
+        print("\n")
         return menu()
     elif command == 'bluelog':
         print("")
@@ -1809,7 +1811,7 @@ def menu():
     elif command == "driftnet":
         print("")
         os.system("driftnet -s -v")
-        print("",end)
+        print("\n",end)
         return menu()
     elif command == "pcredz":
         if option:
@@ -2232,13 +2234,9 @@ def menu():
                     option = "http://"+option
             print("")
             os.system("wapiti %s -u --verify-ssl 1 -v 1 --output output/Wapiti"%(option))
-            try:
-                f = open("%s/output/Wapiti/index.html"%(os.getcwd()))
-                f.close()
+            if os.path.isfile("output/Wapiti/index.html"):
                 print("\n-# Apro la pagina di analisi, solo un momento...\n")
                 os.system("open firefox %s/output/Wapiti/index.html"%(os.getcwd()))
-            except IOError:
-                print("\n-# (%s-%s) Errore nell'apertura del file, questo non dovrebbe succedere..."%(red,end))
             print("")
         else:
             print("\n-# Multi-Scanner per XSS, SQLi, BlindSQL, ecc...")
@@ -2327,7 +2325,7 @@ def menu():
                 print("-# (%s-%s) Nessuna connessione"%(red,end))
                 return menu()
             print("")
-            os.system("0trace.sh %s %s"%(lhost, option))
+            os.system("0trace.sh %s %s"%(iface, option))
             print("")
         else:
             print("\n-# Traccia gli indirizzi IP connessi all'indirizzo in questione")
@@ -2349,7 +2347,7 @@ def menu():
         if option:
             print("")
             os.system("xprobe2 -r %s"%(option))
-            print("")
+            print("\n")
         else:
             print("\n-# Scopri che sistema operativo utilizza l'indirizzo in questione")
             print("-# Uso: $ xprobe <indirizzo>\n")
@@ -2812,7 +2810,6 @@ def help():
         print(" $ banner                              Mostra il banner                                    ") ; sleep(.01)
         print(" $ show tools                          Vedi tutti i tools                                  ") ; sleep(.01)
         print(" $ show exploits                       Vedi tutti gli exploits                             ") ; sleep(.01)
-        print(" $ fsopen                              Apri fsociety in un nuovo terminale                 ") ; sleep(.01)
         print(" $ reload / stop                       Ricarica / Ferma i servizi                          ") ; sleep(.01)
         print(" $ restart                             Riavvia il programma                                ") ; sleep(.01)
         print(" $ netinfo                             Informazioni di rete                                ") ; sleep(.01)
