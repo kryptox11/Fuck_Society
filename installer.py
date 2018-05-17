@@ -2,7 +2,7 @@
 # coding: utf8
 # Autore: Skull00
 try:
-    import os,sys,time,readline,socket,requests
+    import os,sys,time,readline,socket,requests,platform
     from time import sleep
     #
     global end,red,blue,bright_green,bright_yellow,underline
