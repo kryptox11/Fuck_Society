@@ -10,26 +10,21 @@ try:
         bright_green = '\033[1;32m'
         bright_yellow = '\033[1;33m'
         underline = '\033[4m'
-        Tools = red+"214"+end
+        Tools = red+"213"+end
         Exploits = red+"18"+end
-        versione = red+"v2.0.1"+end
+        versione = red+"v2.0.2"+end
         autore = red+"Skull00"+end
         #
         import os,sys,time,readline,socket,requests,random,hashlib,platform,signal
         from time import sleep
         import struct # get gateway (+socket)
         import re, uuid # get mac address
-        #
         import netifaces, httplib
         import urllib2, json # Geo-Location
-    except ModuleNotFoundError:
-        sys.exit("-# Usa python2 per avviare il programma")
-    except KeyboardInterrupt:
-        sys.exit("")
-except ImportError:
-    sys.exit("-# Esegui %sinstaller.py%s per avviare il programma"%(bright_green,end))
-except NameError:
-    sys.exit("-# Qualcosa è andato storto...")
+    except ModuleNotFoundError: sys.exit("-# Usa python2 per avviare il programma")
+    except KeyboardInterrupt: sys.exit("")
+except ImportError: sys.exit("-# Esegui %sinstaller.py%s per avviare il programma"%(bright_green,end))
+except NameError: sys.exit("-# Qualcosa è andato storto...")
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -37,10 +32,8 @@ sys.setdefaultencoding('utf8')
 euid = os.geteuid()
 if euid != 0:
     print("-# Permessi di root richiesti")
-    try:
-        time.sleep(.5)
-    except KeyboardInterrupt:
-        sys.exit("")
+    try: time.sleep(.5)
+    except KeyboardInterrupt: sys.exit("")
     args = ['sudo', sys.executable] + sys.argv + [os.environ]
     os.execlpe('sudo', *args) # this line replaces the currently-running process with the sudo
 
@@ -48,17 +41,14 @@ def get_gateway():
     with open("/proc/net/route") as fh:
         for line in fh:
             fields = line.strip().split()
-            if fields[1] != '00000000' or not int(fields[3], 16) & 2:
-                continue
+            if fields[1] != '00000000' or not int(fields[3], 16) & 2: continue
             return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
 def menu():
     def handler(signum, frame):
         os.system("clear")
         pid = os.getpid()
-        if os.path.isfile("bin/banners.pyc"):
-            os.system("rm bin/*.pyc")
-        if os.path.isfile("output/fsociety/booted"):
-            os.system("rm output/fsociety/booted")
+        if os.path.isfile("bin/banners.pyc"): os.system("rm bin/*.pyc")
+        if os.path.isfile("output/fsociety/booted"): os.system("rm output/fsociety/booted")
         sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=24, cols=80))
         os.system("service postgresql stop && echo 0 > /proc/sys/net/ipv4/ip_forward")
         os.system("clear")
@@ -68,12 +58,11 @@ def menu():
     signal.signal(signal.SIGTSTP, handler)
     sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=28, cols=91))
     sys.stdout.write(end)
-    class MyCompleter(object):  # Custom completer
-        def __init__(self, options):
-            self.options = sorted(options)
+    class MyCompleter(object): #
+        def __init__(self, options): self.options = sorted(options)
         def complete(self, text, state):
-            if state == 0:  # on first trigger, build possible matches
-                if text:  # cache matches (entries that start with entered text)
+            if state == 0:
+                if text:
                     self.matches = [s for s in self.options
                                         if s and s.startswith(text)]
                 else:  # no text entered, all matches possible
@@ -104,7 +93,7 @@ def menu():
     "routersploit","wirespy","wpsbreaker","netattack","httrack","lynis","searchsploit","printerspam","pcredz",
     "bettercap","morpheus","wireshark","ettercap","mitmf","penbox","simple-ducky","discover","zarp","sb0x",
     "sslstrip","voiphopper","driftnet","websploit","trity","dzjecter","cheetah","powerfuzzer","instaburst",
-    "chaos","overthruster","arcanus","evildroid","ezsploit","zirikatu","microsploit","l0l","kayak","ioscrack",
+    "chaos","overthruster","arcanus","evildroid","ezsploit","zirikatu","microsploit","kayak","ioscrack",
     "astroid","kautilya","termineter","wifijammer","yersinia","hashcrack","darksploit","u3pwn","ngrok","dymerge",
     "socialfish","btscanner","brutex","angryip","zmap","v3n0m","torghost","macchanger","msfconsole","getip",
     "beelogger","wascan","wapiti","rkhunter","serenity","leviathan","cmospwd","pastezort","wig","webpwn3r",
@@ -442,18 +431,12 @@ def menu():
         def hashcrack(algorithm, hash, wordlist):
             linecount = 0
             start = time.time()
-            if algorithm == "md5":
-                h = hashlib.md5
-            elif algorithm == "sha1":
-                h = hashlib.sha1
-            elif algorithm == "sha224":
-                h = hashlib.sha224
-            elif algorithm == "sha256":
-                h = hashlib.sha256
-            elif algorithm == "sha384":
-                h = hashlib.sha384
-            elif algorithm == "sha512":
-                h = hashlib.sha512
+            if algorithm == "md5": h = hashlib.md5
+            elif algorithm == "sha1": h = hashlib.sha1
+            elif algorithm == "sha224": h = hashlib.sha224
+            elif algorithm == "sha256": h = hashlib.sha256
+            elif algorithm == "sha384": h = hashlib.sha384
+            elif algorithm == "sha512": h = hashlib.sha512
             if wordlist == None:
                 # without wordlist
                 os.system("findmyhash %s -h %s"%(algorithm,hash))
@@ -467,7 +450,6 @@ def menu():
                     for data in encrypter:
                         data = data.split()
                         for line in data:
-                            #print line
                             try:
                                 crypt = h(line).hexdigest()
                                 sys.stdout.write('\r' + " > Parola Testata: " + str(line) + " " * 20)
@@ -882,7 +864,7 @@ def menu():
                     pass
                 else:
                     target = "http://" + option
-            os.system("gnome-terminal -- goldeneye %s -m random"%(target))
+            os.system("goldeneye %s -m random"%(target))
         else:
             print("\n-# Stress Tester")
             print("-# Uso: $ goldeneye <indirizzo>\n")
@@ -896,7 +878,7 @@ def menu():
         return menu()
     elif command == 't50':
         if option:
-            os.system("gnome-terminal -- t50 %s --flood --turbo"%(option))
+            os.system("t50 %s --flood --turbo"%(option))
         else:
             print("\n-# Stress Tester")
             print("-# Uso: $ t50 <indirizzo>\n")
@@ -1090,7 +1072,7 @@ def menu():
                 target = "http://" + option
             if 'http://' in option or 'https://' in option:
                 pass
-            os.system("gnome-terminal -- dirb %s -f -l -w -o output/DIRB.txt"%(target))
+            os.system("dirb %s -f -l -w -o output/DIRB.txt"%(target))
         else:
             print("\n-# Cerca directory nascoste")
             print("-# Uso: $ dirb <indirizzo>\n")
@@ -1204,7 +1186,7 @@ def menu():
             elif 'http://' in option or 'https://' in option:
                 pass
             print("-# Attendi il termine del processo se eseguito correttamente")
-            os.system("gnome-terminal -- cutycapt --url==%s --out==output/cutycapt_screenshot.png"%(target))
+            os.system("cutycapt --url==%s --out==output/cutycapt_screenshot.png"%(target))
             print("-# Lo screenshot verrà salvato in %soutput/cutycapt_screenshot.png%s"%(blue,end))
         else:
             print("\n-# Fai uno screenshot al sito in questione")
@@ -1670,7 +1652,7 @@ def menu():
             print("\n-# Uso: $ wifiphisher <fake-AP name> <template>\n")
         return menu()
     elif command == 'wifite':
-        os.system("gnome-terminal -- wifite")
+        os.system("wifite")
         return menu()
     elif command == 'wpsbreaker':
         os.system("cd tools/HT-WPS-Breaker/ && ./HT-WB.sh")
@@ -1680,7 +1662,7 @@ def menu():
         os.system("cd tools/netattack2/ && python netattack2.py")
         logo_menu()
     elif command == 'wifijammer':
-        os.system("gnome-terminal -- python tools/wifijammer/wifijammer.py")
+        os.system("python tools/wifijammer/wifijammer.py")
         return menu()
     elif command == 'routersploit':
         os.system("routersploit")
@@ -1692,7 +1674,7 @@ def menu():
         logo_menu()
     elif command == 'bettercap':
         print("-# La sessione di sniffing verrà salvata in %soutput/bettercap.txt%s"%(blue,end))
-        os.system("gnome-terminal -- bettercap -autostart \"arp.spoof,dhcp6.spoof,dns.spoof,http.proxy,https.proxy,net.probe,net.recon,net.sniff,events.stream\" -eval \"set net.sniff.verbose true; set dns.spoof.all true; set http.proxy.sslstrip true; set https.proxy.sslstrip true; set net.sniff.local true; set net.sniff.output output/bettercap.txt\"")
+        os.system("bettercap -autostart \"arp.spoof,dhcp6.spoof,dns.spoof,http.proxy,https.proxy,net.probe,net.recon,net.sniff,events.stream\" -eval \"set net.sniff.verbose true; set dns.spoof.all true; set http.proxy.sslstrip true; set https.proxy.sslstrip true; set net.sniff.local true; set net.sniff.output output/bettercap.txt\"")
         return menu()
     elif command == 'morpheus':
         os.system("reset")
@@ -1703,7 +1685,7 @@ def menu():
         os.system("open wireshark")
         return menu()
     elif command == 'ettercap':
-        os.system("gnome-terminal -- ettercap -G")
+        os.system("ettercap -G")
         return menu()
     elif command == 'mitmf':
         try:
@@ -1907,9 +1889,6 @@ def menu():
     elif command == 'pentestly':
         os.system("cd tools/pentestly/ && ./pentestly")
         logo_menu()
-    elif command == 'l0l':
-        os.system("cd tools/l0l/ && ./l0l")
-        logo_menu()
     elif command == 'termineter':
         os.system("termineter")
         logo_menu()
@@ -1963,7 +1942,7 @@ def menu():
         if option:
             if option == 'sniff':
                 try:
-                    command = "gnome-terminal -- wol-e -s -i %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1])
+                    command = "wol-e -s -i %s"%(netifaces.gateways()['default'][netifaces.AF_INET][1])
                 except KeyError:
                     print("-# (%s-%s) Nessuna connessione"%(red,end))
                     return menu()
@@ -1985,7 +1964,7 @@ def menu():
             print("-# (%s-%s) Nessuna connessione"%(red,end))
         return menu()
     elif command == 'xspy':
-        os.system("gnome-terminal -- xspy")
+        os.system("xspy")
         return menu()
     elif command == "eflood":
         print("\n-# Email Spammer\n")
@@ -2121,7 +2100,7 @@ def menu():
         return menu()
     elif command == 'httrack':
         if option:
-            os.system("gnome-terminal -- httrack %s -O output/httrack/%s/"%(option, option))
+            os.system("httrack %s -O output/httrack/%s/"%(option, option))
             print("-# Dati salvati in %soutput/httrack/%s/%s"%(blue,option,end))
         else:
             print("\n-# Site Cloner")
@@ -2179,7 +2158,7 @@ def menu():
                 except ValueError:
                     print("-# (%s-%s) Porta non valida"%(red,end))
                     return menu()
-                os.system("gnome-terminal -- ngrok %s %s"%(option, argument))
+                os.system("ngrok %s %s"%(option, argument))
             else:
                 print("-# (%s-%s) Porta richiesta"%(red,end))
         else:
@@ -2658,7 +2637,7 @@ def menu():
         return menu()
     elif command == 'jexboss':
         if option:
-            os.system("cd exploits/jexboss/ && python jexboss.py -u %s"%(option))
+            os.system("cd exploits/jexboss/ && python jexboss.py -A -u %s"%(option))
             print("")
         else:
             print("\n-# Jexboss è in grado di scansionare e sfruttare le seguenti vulnerabilità:")
@@ -2863,16 +2842,16 @@ def show_tools():
         print(" $ netattack - wifijammer - fakeauth - wifite                                              ") ; sleep(.01)
         print("")
         print("-# %sExploitation-Tools%s:                                                                 "%(bright_green+underline,end))
-        print(" $ routersploit - eggshell - debinject - beelogger - l0l - xspy - arcanus - koadic         ") ; sleep(.01)
+        print(" $ routersploit - eggshell - debinject - beelogger - ktfconsole - arcanus - koadic - xspy  ") ; sleep(.01)
         print(" $ overthruster - pybomber - zirikatu  - pentestly - msfconsole - astroid - weeman         ") ; sleep(.01)
         print(" $ printerspam  - yersinia - armitage  - intersect - termineter - saint   - ngrok          ") ; sleep(.01)
         print(" $ microsploit  - ezsploit - setoolkit - evildroid - darksploit - fatrat  - jboss          ") ; sleep(.01)
-        print(" $ shellsploit  - kautilya - responder - pastezort - socialfish - brutal  - parat          ") ; sleep(.01)
-        print(" $ onelin3r     - ciscoge  - chaos - kayak - u3pwn - wirespy    - eflood  - wole           ") ; sleep(.01)
+        print(" $ shellsploit  - kautilya - responder - pastezort - onelin3r   - brutal  - parat          ") ; sleep(.01)
+        print(" $ socialfish   - ciscoge  - chaos - kayak - u3pwn - wirespy    - eflood  - wole           ") ; sleep(.01)
         print("")
         print("-# %sAll-In-One%s:                                                                         "%(bright_green+underline, end))
-        print(" $ hakkuf - sb0x - inguma - discover - websploit  - simple-ducky                           ") ; sleep(.01)
-        print(" $ atscan - zarp - penbox - dzjecter - ktfconsole - trity                                  ") ; sleep(.01)
+        print(" $ hakkuf - sb0x - inguma - discover - websploit    - trity                                ") ; sleep(.01)
+        print(" $ atscan - zarp - penbox - dzjecter - simple-ducky                                        ") ; sleep(.01)
         print("")
         print("-# %sOthers%s:                                                                             "%(bright_green+underline,end))
         print(" $ cmospwd - rkhunter - lynis - searchsploit                                               ") ; sleep(.01)
@@ -3090,11 +3069,11 @@ def portscan(ip):
 
 if __name__ == "__main__":
     try:
-        compatible = ["KaliLinux"]
-        get_sys = platform.linux_distribution()[0] + platform.system()
+        compatible = ["Kali","Parrot"]
+        get_sys = platform.linux_distribution()[0]
         if get_sys not in compatible:
             print("-# (%s-%s) Spiacente, programma non compatibile col tuo sistema"%(red,end))
-            print("-# Sistemi supportati:\n - Kali Linux".format(bright_green,end))
+            print("-# Sistemi supportati:\n - Kali Linux\n - Parrot OS".format(bright_green,end))
             sys.exit()
         biohazard = u"\u2623"
         sys.stdout.write("\x1b]2;"+biohazard+" Fuck Society "+biohazard+"\x07") # Titolo terminale

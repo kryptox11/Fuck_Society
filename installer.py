@@ -4,53 +4,38 @@
 try:
     import os,sys,time,readline,socket,requests,platform
     from time import sleep
-    #
     global end,red,blue,bright_green,bright_yellow,underline
     end = '\033[0m'
     red = '\033[1;31m'
     blue = '\033[1;34m'
     bright_green = '\033[1;32m'
     bright_yellow = '\033[1;33m'
-    black = "\033[1;30m"
     underline = '\033[4m'
-except KeyboardInterrupt:
-    sys.exit("")
+except KeyboardInterrupt: sys.exit("")
 sys.stdout.write("\x1b]2;Fuck Society Installer\x07") # Titolo finestra
 euid = os.geteuid()
 if euid != 0:
     print("-# Permessi di root richiesti")
-    try:
-        time.sleep(.5)
-    except KeyboardInterrupt:
-        sys.exit("")
+    try: time.sleep(.5)
+    except KeyboardInterrupt: sys.exit("")
     args = ['sudo', sys.executable] + sys.argv + [os.environ]
-    # the next line replaces the currently-running process with the sudo
     os.execlpe('sudo', *args)
 def main():
-    # verifica se installato anonym8
-    try:
+    try: # verifica se installato anonym8
         verify_anonym8 = open("/usr/bin/anonym8")
-        print("")
-        print("-# %sAnonym8%s è installato e potrebbe entrare in conflitto con %sTorGhost%s."%(blue,end, blue,end))
-        print("")
+        print("\n-# %sAnonym8%s è installato e potrebbe entrare in conflitto con %sTorGhost%s.\n"%(blue,end, blue,end))
         print("-# Disinstallare Anonym8?")
-        try:
-            command_input = raw_input("(si/no) > ")
-        except (KeyboardInterrupt, EOFError):
-            sys.exit("")
+        try: command_input = raw_input("(si/no) > ")
+        except (KeyboardInterrupt, EOFError): sys.exit("")
         tokens = command_input.split()
-        try:
-            command = tokens[0]
-        except IndexError:
-            command = None
+        try: command = tokens[0]
+        except IndexError: command = None
         if command == 'si' or command == 's' or command == None:
             os.system("xterm -T 'Disinstallo Anonym8...' -e 'rm -rf /opt/anonym8 /usr/share/applications/anonym8.desktop /etc/init.d/anonym8.sh /usr/bin/anonym8 /usr/bin/anON /usr/bin/anOFF'")
             print("-# %sAnonym8%s disinstallato"%(blue,end))
             print("")
-        else:
-            pass
-    except IOError:
-        pass
+        else: pass
+    except IOError: pass
     try:
         print("-# Verranno installati tutti i Pacchetti e Tools. Continuare?")
         command = raw_input("(si/no) > ")
@@ -100,44 +85,39 @@ def installer():
 "xprobe oscanner intersect ophcrack 0trace arachni clusterd pandoc bluesnarfer cmospwd rkhunter wapiti jboss-autopwn python-libpcap lynis dirbuster libncurses5-dev fimap t50 lynx xspy libssl-doc libssl-dev libdata-random-perl libfile-modified-perl default-jre openjdk-8-jdk openjdk-8-jre zlib1g-dev python-crypto python-requests libhtml-tableextract-perl libhtml-tokeparser-simple-perl libterm-shell-perl libtext-autoformat-perl bettercap thc-ssl-dos libhook-lexwrap-perl dirb medusa libxslt1-dev screen lighttpd python-pycurl python-whois maven default-jdk lib32ncurses5 libwww-mechanize-formfiller-perl php-xml php-curl php7.0-cgi skipfish driftnet btscanner zmap"
     ]
     apt_2 = [
-"hash-identifier routersploit vega responder tor curl libxml2-utils sslyze commix sslscan libpcap-dev hostapd mitmf zaproxy hydra parsero cisco-torch dnsenum cookie-cadger whois bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maltegoce figlet httrack nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite armitage joomscan sublist3r zenmap python-geoip goldeneye python-netifaces php-cgi theharvester python-pip python3-pip dnsmasq wireshark u3-pwn jsql uniscan voiphopper gnome-terminal libgd-perl findmyhash powerfuzzer sslstrip wol-e miranda cdpsnarf automater sqldict nikto jsql bluelog libxml2-dev amap siege whatweb termineter ipmitool recon-ng libffi-dev driftnet inspy libhtml-display-perl cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap python3 lib32z1"
+"hash-identifier routersploit vega responder tor curl libxml2-utils sslyze commix sslscan libpcap-dev hostapd mitmf zaproxy hydra parsero cisco-torch dnsenum cookie-cadger whois bc dnsutils libjpeg62-turbo-dev wondershaper libtext-reform-perl maltegoce figlet httrack nmap python-nmap python-nfqueue wifiphisher gcc set golang upx-ucl wifite armitage joomscan sublist3r zenmap python-geoip goldeneye python-netifaces php-cgi theharvester python-pip python3-pip dnsmasq wireshark u3-pwn jsql uniscan voiphopper libgd-perl findmyhash powerfuzzer sslstrip wol-e miranda cdpsnarf automater sqldict nikto jsql bluelog libxml2-dev amap siege whatweb termineter ipmitool recon-ng libffi-dev driftnet inspy libhtml-display-perl cutycapt smtp-user-enum p0f yersinia intrace hping3 dotdotpwn dnsmap python3 lib32z1"
     ]
-    pip = ["cssselect validators terminaltables wget service_identity humanfriendly pybluez passlib flask wtforms pysocks pyopenssl twisted pcapy dnspython urllib3 ipaddress bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes"]
+    pip = ["mechanize stem html5lib lxml validate_email pyDNS scapy cssselect validators terminaltables wget service_identity humanfriendly pybluez passlib flask wtforms pysocks pyopenssl twisted pcapy dnspython urllib3 ipaddress bs4 droopescan beautifulsoup4 sslyze requests netifaces capstone pefile colorama pylzma nmap jsonrpclib PyPDF2 olefile slowaes"]
     pip2 = ["cmd2 humanfriendly netlib"]
-    excpts = ["python3 -m pip install mitmproxy","easy_install wtforms scapy mechanize lxml html5lib validate_email pyDNS stem netifaces","sudo cpan JSON"]
+    excpts = ["python3 -m pip install mitmproxy","sudo cpan JSON"]
     for e in apt:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e apt install %s -y"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     for e in apt_2:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e apt install %s -y"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     #
     for e in pip:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e pip install %s"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     #
     for e in pip2:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e pip2 install %s"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     #
     for e in excpts:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e %s"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     sys.stdout.write(4 * " " + "( %sOK%s )\n"%(bright_green,end))
     sys.stdout.flush()
     #
@@ -205,13 +185,13 @@ def installer():
 "https://github.com/eschultze/URLextractor.git","https://github.com/codingo/NoSQLMap.git","https://github.com/Karlheinzniebuhr/torshammer.git",
 "https://github.com/kamorin/DHCPig.git","https://github.com/m4ll0k/Drup.git","https://github.com/Screetsec/Microsploit.git",
 "https://github.com/m4ll0k/Infoga.git","https://www.github.com/Skull00/Gen2kr.git/","https://github.com/Ethical-H4CK3R/InstaBurst.git",
-"https://github.com/roissy/l0l.git","https://github.com/hahwul/a2sv.git","https://github.com/websploit/websploit.git",
+"https://github.com/hahwul/a2sv.git","https://github.com/websploit/websploit.git","https://github.com/Mebus/cupp.git",
 "https://github.com/joker25000/Dzjecter.git","https://github.com/UndeadSec/SocialFish.git","https://github.com/D4Vinci/One-Lin3r.git",
 "https://github.com/D4Vinci/Cr3dOv3r.git","https://github.com/joker25000/Devploit.git","https://github.com/1N3/BruteX.git",
 "https://github.com/lgandx/PCredz.git","https://github.com/stinkymonkeyph/FuckScrap.git","https://github.com/v3n0m-Scanner/V3n0M-Scanner.git",
 "https://github.com/m4ll0k/WAScan.git","https://github.com/abaykan/53R3N17Y","https://github.com/leviathan-framework/leviathan.git",
 "https://github.com/zigoo0/webpwn3r.git","https://github.com/k4m4/dymerge.git","https://github.com/jekyc/wig.git",
-"https://github.com/fadinglr/Parat.git","https://github.com/r00t-3xp10it/netool-toolkit.git","https://github.com/Mebus/cupp.git",
+"https://github.com/fadinglr/Parat.git","https://github.com/r00t-3xp10it/netool-toolkit.git",
 # estensioni
 "https://github.com/wifiphisher/extra-phishing-pages.git" # wifiphisher
     ]
@@ -224,14 +204,12 @@ def installer():
         try:
             os.system("xterm -T 'Fuck Society Installer' -e 'git clone %s'"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto.\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     for e in wget:
         try:
             os.system("xterm -T 'Fuck Society Installer' -e 'wget %s'"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto.\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     sys.stdout.write(20 * " " + "( %sOK%s )\n"%(bright_green,end))
     sys.stdout.flush()
     # tools installer
@@ -263,7 +241,6 @@ def installer():
 "cd a2sv/ && ./install",
 "cd pentestly/ && rm REQUIREMENTS && ./install.sh",
 "cd Kautilya && bundle install",
-"cd l0l/ && make",
 "cd zarp/ && pip install -r requirements.txt",
 "cd car-hacking-tools/ && make install",
 "cd instarecon/ && python setup.py install",
@@ -293,14 +270,13 @@ def installer():
         try:
             os.system("xterm -T 'Fuck Society Installer' -e '%s'"%(e))
             time.sleep(.1)
-        except (KeyboardInterrupt,EOFError):
-            sys.exit("\n-# Interrotto.\n")
+        except (KeyboardInterrupt,EOFError): sys.exit("\n-# Interrotto\n")
     sys.stdout.write(19 * " " + "( %sOK%s )\n"%(bright_green,end))
     sys.stdout.flush()
     # fase finale
     sys.stdout.write(" Installo per Utilità ")
     sys.stdout.flush()
-    os.system("xterm -T 'Fuck Society Installer' -e 'apt install wine32 playonlinux ftp python3-setuptools python3-dev netdiscover dsniff yum -y && easy_install3 pip && pip install wafw00f request pythonwhois && pip3 install pyasn1 tabulate impacket six termcolor colorama && dpkg --configure -a'")
+    os.system("xterm -T 'Fuck Society Installer' -e 'apt install wine32 playonlinux ftp python3-setuptools python3-dev netdiscover dsniff yum -y && pip install wafw00f request pythonwhois && pip3 install pyasn1 tabulate impacket six termcolor colorama && dpkg --configure -a'")
     sys.stdout.write(13 * " " + "( %sOK%s )\n"%(bright_green,end))
     sys.stdout.flush()
     #
@@ -313,14 +289,8 @@ def installer():
     print("-# Digita %sfsociety%s ovunque nella shell oppure %s./fsociety%s dalla cartella"%(bright_green,end, bright_green,end))
     sys.exit("")
 
-def connection_detector():
+def check_conn():
     try:
-        compatible = ["KaliLinux"]
-        get_sys = platform.linux_distribution()[0] + platform.system()
-        if get_sys not in compatible:
-            print("-# (%s-%s) Spiacente, programma non compatibile col tuo sistema"%(red,end))
-            print("-# Sistemi supportati:\n - Kali Linux".format(bright_green,end))
-            sys.exit()
         print("-# %sFuck Society Installer%s"%(bright_green,end))
         time.sleep(.2)
         sys.stdout.write("-# Verifico connessione internet ")
@@ -330,17 +300,23 @@ def connection_detector():
         sys.stdout.flush()
         print("\n")
         print("-# %sAttenzione%s:"%(bright_yellow,end))
+        if platform.linux_distribution() == "Parrot":
+            print("   Utilizzando Parrot OS, potresti trovare tool all'interno del\n   programma incompatibili col tuo sistema.")
         print("   Una volta eseguita l'installazione non rinominare o spostare la cartella")
-        print("   di %sfsociety%s."%(bright_green,end))
-        print("")
+        print("   di %sfsociety%s.\n"%(bright_green,end))
         return main()
     except requests.exceptions.ConnectionError:
         sys.stdout.write("- %sFail%s\n"%(red,end))
         sys.stdout.flush()
         sys.exit("-# Verifica la tua connessione e riprova\n")
-    except KeyboardInterrupt:
-        sys.exit("\n")
+    except KeyboardInterrupt: sys.exit("\n")
 
 if __name__ == "__main__":
     os.system("clear")
-    connection_detector()
+    compatible = ["Kali","Parrot"]
+    get_sys = platform.linux_distribution()[0]
+    if get_sys not in compatible:
+        print("-# (%s-%s) Spiacente, programma non compatibile col tuo sistema"%(red,end))
+        print("-# Sistemi supportati:\n - Kali Linux\n - Parrot OS".format(bright_green,end))
+        sys.exit()
+    check_conn()
